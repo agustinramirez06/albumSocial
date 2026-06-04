@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum Virtual - Club de mi Pueblo</title>
+    <link rel="stylesheet" href="/Styles/login.css">
+</head>
+<body>
+
+    <div id="pantalla-auth" class="vista active">
+        <div class="auth-card">
+            <h2>Bienvenido al Álbum del Club Social y Deportivo Pila</h2>
+            <p>Inicia sesión o regístrate para coleccionar</p>
+            
+            <div class="form-group">
+                <input type="email" id="auth-email" placeholder="Correo electrónico">
+                <input type="password" id="auth-password" placeholder="Contraseña">
+                <input type="text" id="auth-username" placeholder="Nombre de usuario (Solo para registro)">
+            </div>
+            
+            <div class="auth-botones">
+                <button id="btn-login" class="btn-primary">Iniciar Sesión</button>
+                <button id="btn-registrar" class="btn-secondary">Registrarse</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-juego" class="vista">
+        <header class="barra-superior">
+            <span id="saludo-usuario">¡Hola, Jugador!</span>
+            <button id="btn-ir-tienda" class="btn-tienda">Ir a la Tienda 🎁</button>
+        </header>
+        
+        <div class="layout-juego">
+            <main class="seccion-album">
+                <h3>Mi Álbum</h3>
+                <div id="cuadrilla-album" class="album-grid">
+                    </div>
+            </main>
+            
+            <aside class="seccion-pilón">
+                <h3>Tus Figuritas Sueltas</h3>
+                <p class="instruccion">Haz clic en una figurita para pegarla en su lugar</p>
+                <div id="contenedor-sueltas" class="sueltas-flex">
+                    </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="pantalla-tienda" class="vista">
+        <div class="tienda-contenedor">
+            <button id="btn-volver-album" class="btn-volver">← Volver al Álbum</button>
+            
+            <div class="sobre-seccion">
+                <h2>Tienda de Sobres</h2>
+                <p>Reclama tu sobre gratuito cada 24 horas</p>
+                <button id="btn-abrir-sobre" class="btn-sobre">Abrir Sobre de Hoy 📦</button>
+            </div>
+
+            <div id="sobre-abierto-container" class="sobre-abierto-grid"></div>
+
+            <button id="btn-aceptar-sobre" class="btn-primary" style="display: none;">Aceptar y Guardar en el Pilón</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="App/login.js"></script>
+</body>
+</html>

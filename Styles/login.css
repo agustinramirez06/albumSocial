@@ -1,0 +1,152 @@
+/* ---- CONFIGURACIÓN GENERAL ---- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* ---- LÓGICA DE INTERRUPTOR DE PANTALLAS (SPA) ---- */
+.vista {
+    display: none; /* Todo oculto por defecto */
+    min-height: 100vh;
+}
+
+.vista.active {
+    display: block; /* Solo se ve la que tenga la clase 'active' */
+}
+
+/* ---- PANTALLA 1: LOGIN CENTRADO ---- */
+#pantalla-auth {
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+}
+#pantalla-auth.active { display: flex; } /* Corrección para el centrado flex */
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+/* ---- PANTALLA 2: LAYOUT DEL JUEGO (ÁLBUM + PILÓN) ---- */
+.barra-superior {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.layout-juego {
+    display: flex;
+    gap: 25px;
+    padding: 25px;
+    height: calc(100vh - 70px);
+}
+
+/* El Álbum toma el 75% del ancho */
+.seccion-album {
+    flex: 3;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    overflow-y: auto;
+}
+
+/* Cuadrícula de figuritas del Álbum */
+.album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Cada casillero del álbum */
+.slot-album {
+    aspect-ratio: 3/4;
+    background-color: #f1f5f9;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #94a3b8;
+}
+
+/* El Pilón Lateral toma el 25% */
+.seccion-pilón {
+    flex: 1;
+    background: #f1f5f9;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sueltas-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* ---- PANTALLA 3: TIENDA ---- */
+.tienda-contenedor {
+    padding: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.sobre-seccion {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.sobre-abierto-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+/* ---- BOTONES GENERALES ---- */
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #2563eb; color: white; padding: 12px 24px; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-secondary { background: #e2e8f0; color: #475569; padding: 12px 24px; }
+.btn-tienda { background: #10b981; color: white; padding: 10px 20px; }
+.btn-sobre { background: #f59e0b; color: white; padding: 20px 40px; font-size: 18px; }

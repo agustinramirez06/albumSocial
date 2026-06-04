@@ -1,0 +1,295 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CSYDP ALBUM - Digital Collector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;800&amp;family=Hanken+Grotesk:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#121414",
+                        "primary": "#c3c6d7",
+                        "on-surface-variant": "#c7c6cc",
+                        "primary-fixed": "#dfe2f3",
+                        "on-secondary": "#680009",
+                        "surface-container-high": "#282a2b",
+                        "inverse-on-surface": "#2f3131",
+                        "secondary-container": "#d2031e",
+                        "on-surface": "#e2e2e2",
+                        "error-container": "#93000a",
+                        "on-background": "#e2e2e2",
+                        "surface-tint": "#c3c6d7",
+                        "on-tertiary-fixed": "#221b00",
+                        "on-primary": "#2c303d",
+                        "tertiary-fixed": "#ffe16d",
+                        "secondary": "#ffb3ad",
+                        "on-primary-fixed": "#171b28",
+                        "on-primary-container": "#777b8a",
+                        "inverse-primary": "#5a5e6d",
+                        "on-primary-fixed-variant": "#434654",
+                        "on-secondary-fixed": "#410003",
+                        "on-tertiary-container": "#917a00",
+                        "outline-variant": "#46464c",
+                        "surface-container-highest": "#333535",
+                        "tertiary-container": "#130e00",
+                        "surface-dim": "#121414",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#544600",
+                        "surface-container-low": "#1a1c1c",
+                        "secondary-fixed-dim": "#ffb3ad",
+                        "surface-variant": "#333535",
+                        "on-secondary-fixed-variant": "#930011",
+                        "on-secondary-container": "#ffe1de",
+                        "primary-container": "#0a0e1a",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-bright": "#37393a",
+                        "tertiary-fixed-dim": "#e9c400",
+                        "on-tertiary": "#3a3000",
+                        "background": "#121414",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary": "#e9c400",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "outline": "#909096",
+                        "surface-container": "#1e2020",
+                        "primary-fixed-dim": "#c3c6d7",
+                        "secondary-fixed": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "grid-gutter": "1rem",
+                        "container-max-width": "1200px",
+                        "section-margin": "2rem",
+                        "sticker-gap": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Anybody"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Anybody"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-numeric": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Anybody"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-numeric": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "1.1", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<link href="../Styles/styles.css" rel="stylesheet">
+</head>
+<body class="font-body-lg text-body-lg">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface/40">
+<div class="flex justify-between items-center px-grid-gutter py-4 w-full max-w-container-max-width mx-auto">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary drop-shadow-[0_2px_4px_rgba(195,198,215,0.3)] cursor-pointer" onclick="goToHome()">
+                CSYDP ALBUM
+            </h1>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-3 mr-2 cursor-pointer hover:text-primary transition-colors relative" onclick="togglePilon()">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-sm text-[12px]">Pilón</span>
+<span id="pilon-badge-desktop" class="pilon-badge hidden">0</span>
+</div>
+<div class="hidden md:flex items-center mr-2 cursor-pointer hover:text-primary transition-colors" onclick="toggleStatsModal()">
+<span class="material-symbols-outlined">bar_chart</span>
+</div>
+<div class="hidden md:flex flex-col items-end mr-2">
+<span class="font-headline-md text-primary leading-tight" id="profile-username">Jugador</span>
+</div>
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary-container shadow-lg cursor-pointer" onclick="toggleProfileModal()">
+<img id="profile-avatar" alt="User Avatar" class="w-full h-full object-cover">
+</div>
+</div>
+</div>
+</header>
+<!-- Main View -->
+<main class="view-transition min-h-screen relative flex items-center justify-center pt-24 pb-12 overflow-hidden hidden-view" id="main-view">
+<!-- Stadium Background -->
+<div class="fixed inset-0 z-0">
+<img alt="Stadium at night" class="w-full h-full object-cover brightness-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVYSr5fEW2rMuv9BaKfRazmfnCubVZUiI8drbAGomBDu4MWxFTj3n2F9PVu7j99v0dbuMfApPbwJ5tsgSAkwSVLWJQUz53bcSgrr9DvwPC0sqt6-pXG2mGshfNHHRPjdGtQjy6XyRDb3SoiPGLi3fFzJFTHqtlAXsCLO6RW0gOO3jhE1sR0SOM4VPln3MNWg-LjR1FyQ_r4to6W-j4Cd8wSIKjxnYR36l5OEzd0Ei-XAgHo3UmHXewQMy6QsNBiZse9BCsbp-WScjG">
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 w-full max-w-6xl px-0 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+<!-- Daily Pack Card -->
+<div class="glass-panel rounded-xl p-8 flex flex-col items-center justify-between group hover:border-primary/40 transition-all duration-500">
+<div class="text-center">
+<h2 class="font-display-lg-mobile text-primary mb-2">SOBRE DIARIO</h2>
+<p id="subtitulo-sobre-diario" class="text-on-surface-variant font-body-sm">Vuelve mañana para más stickers gratuitos</p>
+</div>
+<div class="relative py-8 w-full flex justify-center">
+<div class="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-75 group-hover:scale-100 transition-transform"></div>
+<div class="relative z-10 floating-pack">
+<img alt="Sobre de Figuritas" class="w-64 md:w-72 h-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAafJWo3_QZNEi8H0QezGD5xKi2qOBFFwuPW0ZVBoLrc80zrygmS11NN9P7jPRhkdPQezDT733QdUZpOLtr7gTwEFt0H-L3ptX9_UzBVNX48hq54hlRTfs7g05jlUZ5SKl1TK1roOItnxBgNeOOin7ZRDygiBy5MjqKIpuUEPN5qcfFfAwv3YG8PHNjkkUQKNBZXI1YBmd7yjF1XuOvtTa9bQ1_KLYKweGQWAX4aHenlZqxwcd2gKKOQ82Zp2XRv8mmD1DlzP84p55O"/>
+</div>
+</div>
+<div class="w-full text-center space-y-6">
+<div class="scoreboard-font text-4xl text-on-surface tracking-widest bg-black/40 py-4 rounded-lg border-b-2 border-primary/20" id="countdown">23:12:23</div>
+<button id="btn-sobre-diario" class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3" onclick="abrirSobre()">
+<span class="material-symbols-outlined">auto_awesome</span>
+                        OBTENER SOBRE DIARIO
+                    </button>
+</div>
+</div>
+<!-- Album Access Card -->
+<div class="relative overflow-hidden border rounded-xl flex flex-col items-center justify-between transition-all duration-500 cursor-pointer group h-full album-card-glow" onclick="toggleAlbum(1)"><div class="absolute inset-0 z-0">
+    <img alt="Album Cover Background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDer3_r6TUUVjSb6xON_eYn3i4-6KhOEIREXM64uf53hWl3CbqWK4Ud7INC3OulFn0Gz1cJgYYtCS0G2yO_HQJPjr0CS9tI9l0DcG8fxX5GLB6Byv7UhMov8Hw1_0bOWWMgsM7GWMHyO_CHjcnQIlgGtQe13XD-iGgo8b1OD6f88BAQqktYTd_YLHJeLm5KCMPYH-gLTmJy7nHi7VFb4pVXz2p-OnEela8rOE4ibQzQ941g84prlACz27qUTYkKCUdCfXkZWYWx2iOA">
+</div>
+
+<div class="relative z-10 w-full h-full flex flex-col justify-between">
+    <div class="text-center pt-4 ">
+        <h2 class="font-headline-md text-primary uppercase tracking-wider drop-shadow-md">MI COLECCIÓN</h2>
+
+        <div class="w-full space-y-2 pb-4 px-4">
+            <div class="flex justify-between items-end mb-2">
+                
+                <span class="text-secondary font-label-numeric text-[10px] tracking-widest font-bold">%50 COMPLETADO</span>
+            </div>
+            <div class="w-full bg-surface-dim/50 h-2 rounded-full overflow-hidden border border-white/5">
+                <div class="bg-secondary-container h-full w-1/2 shadow-[0_0_10px_rgba(210,3,30,0.5)]"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    </div>
+</div></div>
+</div>
+</main>
+<!-- Album View - Page 1 -->
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view hidden" id="album-page-1"></main>
+<!-- Album View - Page 2 -->
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view hidden" id="album-page-2"></main>
+<!-- Pack Result Modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="pack-modal">
+  <!-- Step 1: Closed Pack -->
+  <div id="pack-step-closed" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20">
+    <img src="../assets/sobre-album.png" alt="Sobre" class="w-64 h-auto object-contain floating-pack">
+    <button class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3" onclick="animarApertura()" type="button">
+      <span class="material-symbols-outlined">auto_awesome</span>
+      ABRIR SOBRE
+    </button>
+  </div>
+  <!-- Step 2: Revealing stickers -->
+  <div id="pack-step-reveal" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20">
+    <h2 class="font-headline-md text-primary text-center">FIGURITA <span id="pack-current-num">1</span> DE 5</h2>
+    <div id="sticker-stack" class="relative w-72 h-96"></div>
+    <button id="btn-siguiente" class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all" onclick="siguienteFigurita()" type="button">
+      SIGUIENTE <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+    </button>
+  </div>
+  <!-- Step 3: All stickers revealed -->
+  <div id="pack-step-complete" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 w-full mx-4 border border-primary/20">
+    <h2 class="font-headline-md text-primary text-center">ABRISTE TU SOBRE</h2>
+    <div id="pack-stickers-grid" class="flex justify-center gap-3 flex-nowrap"></div>
+    <button class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all" onclick="cerrarModalCompleto()" type="button">
+      ACEPTAR
+    </button>
+  </div>
+</div>
+<!-- Pilón Overlay -->
+<div class="fixed inset-0 hidden-view pilon-overlay" id="pilon-overlay" onclick="togglePilon()"></div>
+<!-- Pilón Panel -->
+<div class="fixed top-16 left-0 right-0 pilon-panel" id="pilon-panel">
+  <div class="bg-surface-container-high border-b border-white/10 rounded-b-xl shadow-2xl max-h-[55vh] flex flex-col mx-4">
+    <div class="flex items-center justify-between p-3 border-b border-white/5">
+      <h2 class="font-headline-md text-[16px] text-primary">Figuritas <span class="text-secondary-container">Sueltas</span></h2>
+      <button class="text-on-surface-variant hover:text-primary transition-colors" onclick="togglePilon()" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-3 overflow-y-auto flex-1">
+      <div id="pilon-empty" class="text-center py-6 hidden-view">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant opacity-30">inventory_2</span>
+        <p class="text-on-surface-variant font-body-sm text-[13px] mt-2">No tenés figuritas sueltas</p>
+      </div>
+      <div id="pilon-grid" class="grid grid-cols-5 md:grid-cols-8 gap-2"></div>
+    </div>
+  </div>
+</div>
+<!-- Bottom Nav Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-2xl border-t border-white/10 bg-surface/80 rounded-t-full shadow-2xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60" onclick="goToHome()">
+<span class="material-symbols-outlined">stadium</span>
+<span class="font-body-sm text-[10px]">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-6 py-1 shadow-[0_0_15px_rgba(210,3,30,0.4)]" onclick="toggleAlbum(1)">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">book_5</span>
+<span class="font-body-sm text-[10px]">Album</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 relative" onclick="togglePilon()">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-sm text-[10px]">Pilón</span>
+<span id="pilon-badge" class="pilon-badge hidden">0</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60" onclick="toggleStatsModal()">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-body-sm text-[10px]">Stats</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60" onclick="toggleProfileModal()">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-sm text-[10px]">Profile</span>
+</div>
+</nav>
+<!-- Stats Modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="stats-modal">
+  <div class="glass-panel rounded-xl p-8 max-w-sm w-full mx-4 border border-primary/20 flex flex-col gap-6">
+    <div class="text-center">
+      <h2 class="font-headline-md text-primary">ESTADÍSTICAS</h2>
+    </div>
+    <div id="stats-content" class="space-y-5">
+    </div>
+    <button class="w-full bg-surface-container-high text-on-surface-variant font-display-lg-mobile text-lg py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-all" onclick="toggleStatsModal()" type="button">
+      CERRAR
+    </button>
+  </div>
+</div>
+<!-- Profile Modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="profile-modal">
+  <div class="glass-panel rounded-xl p-8 max-w-md w-full mx-4 border border-primary/20 flex flex-col items-center gap-6">
+    <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-secondary-container shadow-xl flex-shrink-0">
+      <img id="profile-modal-avatar" alt="Avatar" class="w-full h-full object-cover">
+    </div>
+    <div class="text-center w-full">
+      <h2 class="font-headline-md text-primary text-2xl" id="profile-modal-username">Jugador</h2>
+    </div>
+    <div class="w-full space-y-4 border-t border-white/10 pt-4">
+      <div class="flex items-center gap-3 text-sm">
+        <span class="material-symbols-outlined text-on-surface-variant">mail</span>
+        <span class="text-on-surface-variant">Correo:</span>
+        <span class="text-primary ml-auto" id="profile-modal-email">tucorreo@ejemplo.com</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm">
+        <span class="material-symbols-outlined text-on-surface-variant">calendar_month</span>
+        <span class="text-on-surface-variant">Miembro desde:</span>
+        <span class="text-primary ml-auto" id="profile-modal-member-since">—</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm">
+        <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+        <span class="text-on-surface-variant">Contraseña:</span>
+        <span class="text-primary ml-auto font-label-numeric tracking-widest" id="profile-modal-password">••••••••</span>
+      </div>
+    </div>
+    <button class="w-full bg-surface-container-high text-on-surface-variant font-display-lg-mobile text-lg py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-all" onclick="toggleProfileModal()" type="button">
+      CERRAR
+    </button>
+  </div>
+</div>
+<script src="../App/app.js"></script>
+
+</body></html>

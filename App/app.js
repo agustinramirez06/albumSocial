@@ -1,34 +1,77 @@
 // ===================== DATA LAYER =====================
 
 const stickers = {
-  '0':  { nombre: 'Copa Clausura 2017',  categoria: 'especial', img: '../campeones2017/0.png',  empty: '../figuritasVacias/0.png' },
-  '1':  { nombre: 'Mandrake Pereyra',  categoria: 'comun', img: '../campeones2017/1.png',  empty: '../figuritasVacias/1.png' },
-  '2':  { nombre: 'Toto Gonzalez',  categoria: 'comun', img: '../campeones2017/2.png',  empty: '../figuritasVacias/2.png' },
-  '3':  { nombre: 'Renzo Menconi',  categoria: 'comun', img: '../campeones2017/3.png',  empty: '../figuritasVacias/3.png' },
-  '4':  { nombre: 'Alan Vargas',  categoria: 'comun', img: '../campeones2017/4.png',  empty: '../figuritasVacias/4.png' },
-  '5':  { nombre: 'Ramiro Ceberio',  categoria: 'comun', img: '../campeones2017/5.png',  empty: '../figuritasVacias/5.png' },
-  '6':  { nombre: 'Kelo Gutierrez',  categoria: 'comun', img: '../campeones2017/6.png',  empty: '../figuritasVacias/6.png' },
-  '7':  { nombre: 'Mauro Orlando',  categoria: 'comun', img: '../campeones2017/7.png',  empty: '../figuritasVacias/7.png' },
-  '8':  { nombre: 'Juan Varela',  categoria: 'comun', img: '../campeones2017/8.png',  empty: '../figuritasVacias/8.png' },
-  '9':  { nombre: 'Cristian Durante',  categoria: 'comun', img: '../campeones2017/9.png',  empty: '../figuritasVacias/9.png' },
-  '10': { nombre: 'Santiago De Leon', categoria: 'comun', img: '../campeones2017/10.png', empty: '../figuritasVacias/10.png' },
-  '11': { nombre: 'Joe Niella', categoria: 'comun', img: '../campeones2017/11.png', empty: '../figuritasVacias/11.png' },
-  '12': { nombre: 'Kika Pereyra', categoria: 'comun', img: '../campeones2017/12.png', empty: '../figuritasVacias/12.png' },
-  '13': { nombre: 'Mono Martinez', categoria: 'comun', img: '../campeones2017/13.png', empty: '../figuritasVacias/13.png' },
-  '14': { nombre: 'Maximiliano Vallejo', categoria: 'comun', img: '../campeones2017/14.png', empty: '../figuritasVacias/14.png' },
-  '15': { nombre: 'Nicolas Castaño', categoria: 'comun', img: '../campeones2017/15.png', empty: '../figuritasVacias/15.png' },
-  '16': { nombre: 'Braian Acuña', categoria: 'comun', img: '../campeones2017/16.png', empty: '../figuritasVacias/16.png' },
-  '17': { nombre: 'Juan Cruz Arias', categoria: 'comun', img: '../campeones2017/17.png', empty: '../figuritasVacias/17.png' },
-  '18': { nombre: 'Nicolas Mandau', categoria: 'comun', img: '../campeones2017/18.png', empty: '../figuritasVacias/18.png' },
-  'special-2': { nombre: 'Cuerpo Tecnico', categoria: 'especial', img: '../campeones2017/19.png', empty: '../figuritasVacias/19.png' }
+  '0':  { nombre: 'Copa Clausura 2017',  categoria: 'campeones' },
+  '1':  { nombre: 'Mandrake Pereyra',  categoria: 'campeones' },
+  '2':  { nombre: 'Toto Gonzalez',  categoria: 'campeones' },
+  '3':  { nombre: 'Renzo Menconi',  categoria: 'campeones' },
+  '4':  { nombre: 'Alan Vargas',  categoria: 'campeones' },
+  '5':  { nombre: 'Ramiro Ceberio',  categoria: 'campeones' },
+  '6':  { nombre: 'Kelo Gutierrez',  categoria: 'campeones' },
+  '7':  { nombre: 'Mauro Orlando',  categoria: 'campeones' },
+  '8':  { nombre: 'Juan Varela',  categoria: 'campeones' },
+  '9':  { nombre: 'Cristian Durante',  categoria: 'campeones' },
+  '10': { nombre: 'Santiago De Leon', categoria: 'campeones' },
+  '11': { nombre: 'Joe Niella', categoria: 'campeones' },
+  '12': { nombre: 'Kika Pereyra', categoria: 'campeones' },
+  '13': { nombre: 'Mono Martinez', categoria: 'campeones' },
+  '14': { nombre: 'Maximiliano Vallejo', categoria: 'campeones' },
+  '15': { nombre: 'Nicolas Castaño', categoria: 'campeones' },
+  '16': { nombre: 'Braian Acuña', categoria: 'campeones' },
+  '17': { nombre: 'Juan Cruz Arias', categoria: 'campeones' },
+  '18': { nombre: 'Nicolas Mandau', categoria: 'campeones' },
+  '19': { nombre: 'Cuerpo Tecnico', categoria: 'campeones' },
+  '20': { nombre: 'Agustin Ramirez', categoria: 'actuales' },
+  '21': { nombre: 'Mateo Iturreria', categoria: 'actuales' },
+  '22': { nombre: 'Agustin Ripodas', categoria: 'actuales' },
+  '23': { nombre: 'Alvaro Esposito', categoria: 'actuales' },
+  '24': { nombre: 'Axel Broqua', categoria: 'actuales' },
+  '25': { nombre: 'Mateo Santalucia', categoria: 'actuales' },
+  '26': { nombre: 'Agustin Zuleta', categoria: 'actuales' },
+  '27': { nombre: 'Maximiliano Ledesma', categoria: 'actuales' },
+  '28': { nombre: 'Gaston Luero', categoria: 'actuales' },
+  '29': { nombre: 'Rodrigo Gallo', categoria: 'actuales' },
+  '30': { nombre: 'Juan Cruz Bercetche', categoria: 'actuales' },
+  '31': { nombre: 'Ivan Lescano', categoria: 'actuales' },
+  '32': { nombre: 'Lucas Etchemendy', categoria: 'actuales' },
+  '33': { nombre: 'Jeremias Fondovila', categoria: 'actuales' },
+  '34': { nombre: 'Joaquin Minghetti', categoria: 'actuales' },
+  '35': { nombre: 'Ramiro Arias', categoria: 'actuales' },
+  '36': { nombre: 'Gonzalo Medina', categoria: 'actuales' },
+  '38': { nombre: 'Fernando Fariña', categoria: 'actuales' },
+  '39': { nombre: 'Agustin Oroe', categoria: 'actuales' },
+  '40': { nombre: 'Martin Menchacabazo', categoria: 'actuales' },
+  '41': { nombre: 'Enrique Zelaya', categoria: 'actuales' },
+  '42': { nombre: 'Bautista Chesini', categoria: 'actuales' },
+  '43': { nombre: 'Juan Perez', categoria: 'actuales' },
+  '44': { nombre: 'Marcos Gutierrez', categoria: 'actuales' },
+  '45': { nombre: 'Cristopher Hermida', categoria: 'actuales' },
+  '46': { nombre: 'Demian Dort', categoria: 'actuales' },
+  '47': { nombre: 'Juan Roman De Leon', categoria: 'actuales' },
+  '48': { nombre: 'Chapa Medina', categoria: 'actuales' },
+  '49': { nombre: 'Pola Ottaviano', categoria: 'actuales' },
+  '50': { nombre: 'Coco Esposito', categoria: 'actuales' },
+  '51': { nombre: 'Parry', categoria: 'actuales' },
+  '52': { nombre: 'Tomas Bedoya', categoria: 'actuales' },
+  '53': { nombre: 'Elian Hermida', categoria: 'promesas' },
+  '54': { nombre: 'Ariel Solis', categoria: 'promesas' },
+  '55': { nombre: 'Santino Ruiz', categoria: 'promesas' },
+  '56': { nombre: 'Joaquin Lazarte', categoria: 'promesas' },
+  '57': { nombre: 'Joaquin Bolondrade', categoria: 'promesas' },
+  '58': { nombre: 'Joaquin Castell', categoria: 'promesas' },
+  '59': { nombre: 'Mateo Montenero', categoria: 'promesas' },
+  '60': { nombre: 'Rodrigo Minho', categoria: 'promesas' },
+  '61': { nombre: 'Santiago Andrade', categoria: 'promesas' },
+  '62': { nombre: 'Matias Lezcano', categoria: 'promesas' },
+  '63': { nombre: 'Thiago De Felipe', categoria: 'promesas' },
+  '64': { nombre: 'Luciano Fredes', categoria: 'promesas' },
+  '65': { nombre: 'Santos Donizzetti', categoria: 'promesas' },
+  '66': { nombre: 'Valentino Fuertes', categoria: 'promesas' },
+  '67': { nombre: 'Nazareno Balcedo', categoria: 'promesas' },
+  '68': { nombre: 'Manuel Maceira', categoria: 'promesas' },
+  '69': { nombre: 'Matias Pereyra', categoria: 'promesas' }
 };
 
-const stickerImages = {};
-const emptyImages = {};
-for (const [id, s] of Object.entries(stickers)) {
-  stickerImages[id] = s.img;
-  emptyImages[id] = s.empty;
-}
 
 const albumPages = [
   {
@@ -39,7 +82,7 @@ const albumPages = [
     specialStickerId: '0',
     watermarkSrc: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUb0gIUWWKRZ_P8gq1cuBUpRZVyCHtVYw6XbglfJrvmVq4EmasaYhVwIOw3JpiEQf7n4kq7hwfgb9yq7XayYOMv9pYhvjzVCG9nugppzJI9Sr3OghKT9L5dMB9RsojSr0xbUoinznCQurikZKWXmdvXmQo7Tg40LlnmZ2rI7JXGXZUvjYn91R3jRL4KcEEixzVvhhBU69EqIMaP-xODb6lwYrPkpv7LhbqfuBRvmzVHsT0eViQzwkb4vlmhqBfLScGA1cbGkX3D4l7',
     sidebar: { type: 'match', title: 'Final Ida 18/12/2017 CSYDP vs UNION Vecinal De Etcheverry', score: 'CSYDP 3-2 Union Vecinal De Etcheverry', goals: ['K.Gutierrez','K.Gutierrez','M.Orlando'] },
-    photo: { src: '../campeones2017/final-ida.jpg', label: 'FINAL IDA 2017' },
+    photo: { src: '../assets/final-ida.jpg', label: 'FINAL IDA 2017' },
     pageLabel: 'HOJA 1'
   },
   {
@@ -47,11 +90,61 @@ const albumPages = [
     title: 'Campeones Torneo clausura 2017',
     gridCols: 5,
     stickerIds: ['11','12','13','14','16','17','18','15'],
-    specialStickerId: 'special-2',
+    specialStickerId: '19',
     watermarkSrc: 'https://lh3.googleusercontent.com/aida-public/AB6AXuASCyPMrX1cHc_oTSaExBwNKqw0eUuIzg7W4j6trAzS9blJFPQU2MA9l7WC6CHC75mk4cADJWwI0PYSGbrgP3ReWJP65U0w-kg5SoeymXEzGfq0OQJGXeqGezkC1fZz2oVOu7qK03qGnO7sXOqa6XF8OUWHxlkAlKUZfrBVjBUiKEUxs_Io8VE8gxSzcMyxLAlCSBgwITzWFDByo8r7kDkXjfEUU6xF0tLKkfRX3HUSGmnivd_kjBWQ5NCWde0ILdMGJWKtkE_a6kQR',
     sidebar: { type: 'match', title: 'Final Vuelta 23/12/2017 CSYDP vs UNION Vecinal De Etcheverry', score: 'CSYDP 2-2 Union Vecinal De Etcheverry', goals: ['M.Orlando','M.Orlando'] },
-    photo: { src: '../campeones2017/final-vuelta.jpg', label: 'FINAL VUELTA 2017' },
-    pageLabel: 'HOJA 2'
+    photo: { src: '../assets/final-vuelta.jpg', label: 'FINAL VUELTA 2017' },
+    pageLabel: 'HOJA 2'  },
+    
+  {
+    id: 3,
+    title: 'Jugadores Actuales',
+    gridCols: 5,
+    stickerIds: ['20','21','22','23','24','25','26','27','28','29'],
+    specialStickerId: '50',
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 3'
+  },
+  {
+    id: 4,
+    title: 'Jugadores Actuales',
+    gridCols: 5,
+    stickerIds: ['30','31','32','33','34','35','36','38','39'],
+    specialStickerId: '51',
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 4'
+  },
+  {
+    id: 5,
+    title: 'Jugadores Actuales',
+    gridCols: 5,
+    stickerIds: ['40','41','42','43','44','45','46','47','48','49'],
+    specialStickerId: '52',
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 5'
+  },
+  {
+    id: 6,
+    title: 'Promesas CSYDP',
+    gridCols: 5,
+    stickerIds: ['53','54','55','56','57','58','59','60','61','62'],
+    specialStickerId: null,
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 6'
+  },
+  {
+    id: 7,
+    title: 'Promesas CSYDP',
+    gridCols: 5,
+    stickerIds: ['63','64','65','66','67','68','69'],
+    specialStickerId: null,
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 7'
   }
 ];
 
@@ -81,64 +174,203 @@ const DataService = {
   STORAGE_PEGADAS: 'csydp_pegadas',
   STORAGE_SUELTAS: 'csydp_sueltas',
   STORAGE_ULTIMO_SOBRE: 'csydp_ultimo_sobre',
+  STORAGE_PROFILE: 'csydp_profile',
 
   async getMisFiguritas() {
-    const pegadas = safeGetJSON(this.STORAGE_PEGADAS, []);
-    const sueltas = safeGetJSON(this.STORAGE_SUELTAS, []);
-    return { pegadas, sueltas };
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        const { data } = await supabaseClient
+          .from('album_usuarios')
+          .select('id_figurita, esta_pegada')
+          .eq('id_usuario', user.id);
+        if (data) {
+          const pegadas = data.filter(r => r.esta_pegada).map(r => String(r.id_figurita));
+          const sueltas = data.filter(r => !r.esta_pegada).map(r => String(r.id_figurita));
+          safeSetJSON(this.STORAGE_PEGADAS, pegadas);
+          safeSetJSON(this.STORAGE_SUELTAS, sueltas);
+          return { pegadas, sueltas };
+        }
+      }
+    } catch {}
+    return {
+      pegadas: safeGetJSON(this.STORAGE_PEGADAS, []),
+      sueltas: safeGetJSON(this.STORAGE_SUELTAS, [])
+    };
   },
 
   async pegarFigurita(figuritaId) {
+    const idStr = String(figuritaId);
     let sueltas = safeGetJSON(this.STORAGE_SUELTAS, []);
     let pegadas = safeGetJSON(this.STORAGE_PEGADAS, []);
-    const idx = sueltas.indexOf(figuritaId);
+    const idx = sueltas.indexOf(idStr);
     if (idx === -1) return false;
     sueltas.splice(idx, 1);
-    if (!pegadas.includes(figuritaId)) {
-      pegadas.push(figuritaId);
-    }
-    const saved = safeSetJSON(this.STORAGE_SUELTAS, sueltas);
-    if (!saved) return false;
+    if (!pegadas.includes(idStr)) pegadas.push(idStr);
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        const numId = parseInt(idStr, 10);
+        const { data: existing } = await supabaseClient
+          .from('album_usuarios')
+          .select('id')
+          .eq('id_usuario', user.id)
+          .eq('id_figurita', numId);
+        if (existing && existing.length > 0) {
+          await supabaseClient
+            .from('album_usuarios')
+            .update({ esta_pegada: true })
+            .eq('id_usuario', user.id)
+            .eq('id_figurita', numId);
+        } else {
+          await supabaseClient
+            .from('album_usuarios')
+            .insert({ id_usuario: user.id, id_figurita: numId, esta_pegada: true });
+        }
+      }
+    } catch {}
+    safeSetJSON(this.STORAGE_SUELTAS, sueltas);
     safeSetJSON(this.STORAGE_PEGADAS, pegadas);
     return true;
   },
 
   async abrirSobre() {
-    const allIds = Object.keys(stickers);
-    const shuffled = [...allIds].sort(() => Math.random() - 0.5);
-    const nuevas = shuffled.slice(0, 5);
-    let sueltas = safeGetJSON(this.STORAGE_SUELTAS, []);
-    for (const id of nuevas) {
-      if (!sueltas.includes(id)) {
-        sueltas.push(id);
-      }
+    const pegadas = safeGetJSON(this.STORAGE_PEGADAS, []);
+    const sueltas = safeGetJSON(this.STORAGE_SUELTAS, []);
+    const yaTiene = new Set([...pegadas, ...sueltas]);
+
+    const porCategoria = {};
+    for (const [id, s] of Object.entries(stickers)) {
+      if (yaTiene.has(id)) continue;
+      if (!porCategoria[s.categoria]) porCategoria[s.categoria] = [];
+      porCategoria[s.categoria].push(id);
     }
+
+    const totalDisp = Object.values(porCategoria).flat().length;
+    if (totalDisp === 0) throw new Error('Completaste el álbum');
+
+    const pesos = { campeones: 1, actuales: 3, promesas: 3 };
+    const categorias = Object.keys(porCategoria);
+
+    const nuevas = [];
+    for (let i = 0; i < 5; i++) {
+      const catsDisponibles = categorias.filter(c => porCategoria[c].length > 0);
+      if (catsDisponibles.length === 0) break;
+
+      const poolCats = catsDisponibles.flatMap(c => Array(pesos[c] || 1).fill(c));
+      const catElegida = poolCats[Math.floor(Math.random() * poolCats.length)];
+      const idx = Math.floor(Math.random() * porCategoria[catElegida].length);
+      const elegido = porCategoria[catElegida].splice(idx, 1)[0];
+      nuevas.push(elegido);
+    }
+
+    for (const id of nuevas) {
+      if (!sueltas.includes(id)) sueltas.push(id);
+    }
+
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user && nuevas.length > 0) {
+        const inserts = nuevas.map(id => ({
+          id_usuario: user.id,
+          id_figurita: parseInt(id, 10),
+          esta_pegada: false
+        }));
+        await supabaseClient.from('album_usuarios').insert(inserts);
+        await supabaseClient
+          .from('perfiles')
+          .update({ ultimo_sobre: new Date().toISOString().split('T')[0] })
+          .eq('id', user.id);
+      }
+    } catch {}
+
     safeSetJSON(this.STORAGE_SUELTAS, sueltas);
-    const today = new Date().toISOString().split('T')[0];
-    safeSetJSON(this.STORAGE_ULTIMO_SOBRE, today);
+    safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
     return nuevas;
   },
 
-  STORAGE_PROFILE: 'csydp_profile',
-
   async getProfile() {
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        const { data } = await supabaseClient
+          .from('perfiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (data) {
+          const profile = {
+            username: data.username || user.email?.split('@')[0] || 'Usuario',
+            email: user.email || '',
+            avatarUrl: data.avatar_url || DEFAULT_AVATAR,
+            memberSince: data.created_at ? new Date(data.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
+          };
+          safeSetJSON(this.STORAGE_PROFILE, profile);
+          return profile;
+        }
+      }
+    } catch {}
     return safeGetJSON(this.STORAGE_PROFILE, null);
   },
 
   async saveProfile(profile) {
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        await supabaseClient
+          .from('perfiles')
+          .update({ username: profile.username, avatar_url: profile.avatarUrl })
+          .eq('id', user.id);
+      }
+    } catch {}
     return safeSetJSON(this.STORAGE_PROFILE, profile);
   },
 
   async yaAbrioHoy() {
     try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        const { data } = await supabaseClient
+          .from('perfiles')
+          .select('ultimo_sobre')
+          .eq('id', user.id)
+          .single();
+        if (data?.ultimo_sobre) {
+          const today = new Date().toISOString().split('T')[0];
+          return data.ultimo_sobre === today;
+        }
+      }
+    } catch {}
+    try {
       const ultimo = localStorage.getItem(this.STORAGE_ULTIMO_SOBRE);
-      const today = new Date().toISOString().split('T')[0];
-      return ultimo === today;
-    } catch {
-      return false;
-    }
+      return ultimo === new Date().toISOString().split('T')[0];
+    } catch { return false; }
   }
 };
+
+const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
+
+const STICKER_FILE_IDS = {};
+
+function getStickerUrl(id) {
+  const fileId = STICKER_FILE_IDS[id] || id;
+  return `${SUPABASE_BUCKET_URL}/stickers/${fileId}.png`;
+}
+
+function getEmptyUrl(id) {
+  const fileId = STICKER_FILE_IDS[id] || id;
+  return `../figuritasVacias/${fileId}.png`;
+}
+
+const stickerImages = {};
+const emptyImages = {};
+for (const [id] of Object.entries(stickers)) {
+  stickerImages[id] = getStickerUrl(id);
+  emptyImages[id] = getEmptyUrl(id);
+}
 
 // ===================== STATE =====================
 
@@ -161,16 +393,16 @@ function getStickerState(id) {
 // ===================== RENDER FUNCTIONS =====================
 
 function renderStickerSlot(id) {
-  const s = stickers[id] || { img: '', empty: '' };
+  const s = stickers[id] || { nombre: '' };
   const state = getStickerState(id);
   const imgSrc = stickerImages[id] || '';
   return `
 <div class="sticker-slot relative flex flex-col items-center justify-center" data-sticker-id="${id}" data-state="${state}">
   <div class="state-vacio absolute inset-0 flex items-center justify-center">
-    <img src="${s.empty}" alt="Vacio" class="w-full h-full object-contain opacity-50 p-1" loading="lazy">
+    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-50 p-1" loading="lazy">
   </div>
   <div class="state-pegar absolute inset-0 cursor-pointer" onclick="pasteSticker(this)">
-    <img src="${s.empty}" alt="Vacio" class="w-full h-full object-contain opacity-30 p-1">
+    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-30 p-1">
     <div class="absolute inset-0 flex items-center justify-center">
       <span class="pegar-badge">PEGAR</span>
     </div>
@@ -246,6 +478,9 @@ function renderAlbumPage(page) {
 <div class="max-w-[1500px] mx-auto album-page-container rounded-xl shadow-2xl p-4 md:p-6 min-h-[700px]">
   <img alt="Background Shield" class="watermark-shield" src="${page.watermarkSrc}">
   <div class="crease hidden md:block"></div>
+  <button class="absolute top-4 right-4 z-20 text-on-surface-variant hover:text-primary transition-colors" onclick="goToHome()" type="button">
+    <span class="material-symbols-outlined text-3xl">arrow_back</span>
+  </button>
   <header class="relative z-10 text-center mb-12">
     <h2 class="font-display-lg text-display-lg text-primary uppercase tracking-tight border-b-2 border-secondary-container inline-block pb-2">
       ${page.title}
@@ -286,33 +521,9 @@ function toggleAlbum(pageId, direction) {
   const isAlbumSlide = direction && currentEl.id.includes('album-page') && target.id.includes('album-page');
 
   if (isAlbumSlide) {
-    const isPrev = direction === 'prev';
-
-    document.querySelectorAll('.slide-stage, .slide-out-left, .slide-out-right, .slide-in-left, .slide-in-right')
-      .forEach(el => el.classList.remove('slide-stage', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right'));
-
-    const currentContainer = currentEl.querySelector('.album-page-container');
-    const targetContainer = target.querySelector('.album-page-container');
-    if (!currentContainer || !targetContainer) return;
-
-    currentEl.classList.add('slide-stage');
     target.classList.remove('hidden-view');
-    target.classList.add('slide-stage');
-
-    targetContainer.classList.add(isPrev ? 'slide-in-left' : 'slide-in-right');
-
-    void targetContainer.offsetHeight;
-
-    currentContainer.classList.add(isPrev ? 'slide-out-right' : 'slide-out-left');
-    targetContainer.classList.remove(isPrev ? 'slide-in-left' : 'slide-in-right');
-
-    setTimeout(() => {
-      currentEl.classList.add('hidden-view');
-      currentEl.classList.remove('slide-stage');
-      currentContainer.classList.remove('slide-out-left', 'slide-out-right');
-      target.classList.remove('slide-stage');
-      currentView = target.id;
-    }, 900);
+    currentEl.classList.add('hidden-view');
+    currentView = target.id;
   } else {
     const views = [document.getElementById('main-view')];
     albumPages.forEach(p => views.push(document.getElementById(`album-page-${p.id}`)));
@@ -323,7 +534,7 @@ function toggleAlbum(pageId, direction) {
       }
     });
 
-    target.classList.remove('hidden');
+    target.classList.remove('hidden-view');
 
     setTimeout(() => {
       if (target) {
@@ -396,7 +607,17 @@ async function abrirSobre() {
     btn.innerHTML = '<span class="material-symbols-outlined spin">progress_activity</span> ABRIENDO...';
   }
 
-  const nuevas = await DataService.abrirSobre();
+  let nuevas;
+  try {
+    nuevas = await DataService.abrirSobre();
+  } catch (e) {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined">auto_awesome</span> OBTENER SOBRE DIARIO';
+    }
+    isOpening = false;
+    return;
+  }
   for (const id of nuevas) {
     if (!misFiguritasSueltas.includes(id)) {
       misFiguritasSueltas.push(id);
@@ -436,7 +657,7 @@ function renderStickerStack() {
   if (numEl) numEl.textContent = packCurrentIndex + 1;
 
   container.innerHTML = packFiguritas.map((id, index) => {
-    const s = stickers[id] || { img: '', nombre: '' };
+    const s = stickers[id] || { nombre: '' };
     const isRevealed = index < packCurrentIndex;
     const isActive = index === packCurrentIndex;
     const isHidden = index > packCurrentIndex;
@@ -444,9 +665,10 @@ function renderStickerStack() {
     const opacity = isActive ? 1 : (isRevealed ? 0.25 : 0);
     const scale = isActive ? 1 : (isRevealed ? 0.85 : 0.5);
 
+    const src = stickerImages[id] || '';
     return `
 <div class="absolute inset-0 flex flex-col items-center justify-center transition-all duration-500" style="z-index: ${zIndex}; opacity: ${isHidden ? 0 : opacity}; transform: scale(${isHidden ? 0.5 : scale});">
-  <img src="${s.img}" alt="${s.nombre}" class="w-56 h-72 md:w-64 md:h-80 object-contain drop-shadow-2xl ${isActive ? 'sticker-reveal' : ''}">
+  <img src="${src}" alt="${s.nombre}" class="w-56 h-72 md:w-64 md:h-80 object-contain drop-shadow-2xl ${isActive ? 'sticker-reveal' : ''}">
   <span class="font-label-numeric text-sm text-primary mt-4 ${isActive ? '' : 'hidden'}">${s.nombre}</span>
 </div>`;
   }).join('');
@@ -474,10 +696,10 @@ function mostrarTodas() {
 
   const container = document.getElementById('pack-stickers-grid');
   container.innerHTML = packFiguritas.map(id => {
-    const s = stickers[id] || { img: '', nombre: '' };
+    const s = stickers[id] || { nombre: '' };
     return `
 <div class="flex flex-col items-center gap-1 sticker-reveal flex-shrink min-w-0">
-  <img src="${s.img}" alt="${s.nombre}" class="w-32 h-44 md:w-52 md:h-60 object-contain drop-shadow-xl">
+  <img src="${stickerImages[id] || ''}" alt="${s.nombre}" class="w-32 h-44 md:w-52 md:h-60 object-contain drop-shadow-xl">
   <span class="font-label-numeric text-[14px] text-primary truncate max-w-full">${s.nombre}</span>
 </div>`;
   }).join('');
@@ -489,14 +711,11 @@ function cerrarModalCompleto() {
 
 // ===================== PILÓN =====================
 
-async function togglePilon() {
+function togglePilon() {
   const overlay = document.getElementById('pilon-overlay');
   const panel = document.getElementById('pilon-panel');
 
   if (overlay.classList.contains('hidden-view')) {
-    const state = await DataService.getMisFiguritas();
-    misFiguritasPegadas = state.pegadas;
-    misFiguritasSueltas = state.sueltas;
     overlay.classList.remove('hidden-view');
     panel.classList.add('open');
     renderPilon();
@@ -521,10 +740,10 @@ function renderPilon() {
   empty.classList.add('hidden-view');
 
   grid.innerHTML = misFiguritasSueltas.map(id => {
-    const s = stickers[id] || { img: '', nombre: '' };
+    const s = stickers[id] || { nombre: '' };
     return `
 <div class="flex flex-col items-center gap-0.5 cursor-pointer hover:bg-white/5 rounded-lg p-1 transition-all group" onclick="irAPegar('${id}')">
-  <img src="${s.img}" alt="${s.nombre}" class="w-full aspect-[3/4] object-contain drop-shadow-lg">
+  <img src="${stickerImages[id] || ''}" alt="${s.nombre}" class="w-full aspect-[3/4] object-contain drop-shadow-lg">
   <span class="font-label-numeric text-[7px] text-primary text-center truncate w-full">${s.nombre}</span>
 </div>`;
   }).join('');
@@ -556,21 +775,11 @@ function irAPegar(stickerId) {
   if (isAlbumPage) {
     const currentPageId = parseInt(currentMain.id.replace('album-page-', ''));
     if (currentPageId !== pageId) {
-      toggleAlbum(pageId, pageId > currentPageId ? 'next' : 'prev');
+      toggleAlbum(pageId);
     }
   } else {
     toggleAlbum(pageId);
   }
-
-  setTimeout(() => {
-    const slot = document.querySelector(`.sticker-slot[data-sticker-id="${stickerId}"]`);
-    if (slot) {
-      slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      slot.style.animation = 'highlight-peg 1.5s ease-in-out';
-      slot.style.borderRadius = '8px';
-      setTimeout(() => { slot.style.animation = ''; }, 1500);
-    }
-  }, isAlbumPage ? 100 : 900);
 }
 
 function findPageForSticker(stickerId) {
@@ -585,17 +794,30 @@ function findPageForSticker(stickerId) {
 function reRenderAlbum() {
   albumPages.forEach(page => {
     const el = document.getElementById(`album-page-${page.id}`);
-    if (el) {
-      el.innerHTML = renderAlbumPage(page);
-    }
+    if (!el) return;
+    el.querySelectorAll('.sticker-slot').forEach(slot => {
+      const id = slot.dataset.stickerId;
+      if (!id) return;
+      const state = getStickerState(id);
+      slot.dataset.state = state;
+      if (state === 'imagen') {
+        const img = slot.querySelector('.state-imagen img');
+        if (img) img.src = stickerImages[id] || '';
+      }
+    });
   });
 }
 
 function checkDailyPack() {
   const btn = document.getElementById('btn-sobre-diario');
   const subtitleEl = document.getElementById('subtitulo-sobre-diario');
-  if (btn) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); }
-  if (subtitleEl) subtitleEl.textContent = 'Abrí cuantos sobres quieras (modo prueba)';
+  if (calcularProgreso() === 100) {
+    if (btn) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
+    if (subtitleEl) subtitleEl.textContent = '¡Completaste el álbum! No podés abrir más sobres';
+  } else {
+    if (btn) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); }
+    if (subtitleEl) subtitleEl.textContent = 'Abrí cuantos sobres quieras (modo prueba)';
+  }
 }
 
 const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23282a2b'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23c7c6cc'/%3E%3Cpath d='M18 82 Q18 58 50 58 Q82 58 82 82' fill='%23c7c6cc'/%3E%3C/svg%3E";
@@ -604,9 +826,10 @@ let profileData = null;
 
 async function loadProfile() {
   if (!profileData) {
+    const { data: { user } } = await supabaseClient.auth.getUser().catch(() => ({ data: { user: null } }));
     profileData = {
-      username: 'Jugador',
-      email: 'tucorreo@ejemplo.com',
+      username: user?.email?.split('@')[0] || 'Usuario',
+      email: user?.email || '',
       avatarUrl: DEFAULT_AVATAR,
       memberSince: new Date().toISOString().split('T')[0]
     };
@@ -667,6 +890,25 @@ function calcularPaginasCompletadas() {
   return completadas;
 }
 
+function renderStatsPorCategoria() {
+  const categorias = {};
+  for (const [id, s] of Object.entries(stickers)) {
+    const cat = s.categoria;
+    if (!categorias[cat]) categorias[cat] = { total: 0, pegadas: 0 };
+    categorias[cat].total++;
+    if (misFiguritasPegadas.includes(id)) categorias[cat].pegadas++;
+  }
+  const iconos = { campeones: 'emoji_events', actuales: 'star', promesas: 'auto_awesome' };
+  const labels = { campeones: 'Campeones', actuales: 'Actuales', promesas: 'Promesas' };
+  return Object.entries(categorias).map(([cat, data]) => `
+    <div class="flex items-center gap-3 text-sm">
+      <span class="material-symbols-outlined text-tertiary">${iconos[cat] || 'circle'}</span>
+      <span class="text-on-surface-variant">${labels[cat] || cat}</span>
+      <span class="text-primary font-label-numeric ml-auto">${data.pegadas} / ${data.total}</span>
+    </div>
+  `).join('');
+}
+
 function renderStats() {
   const container = document.getElementById('stats-content');
   if (!container) return;
@@ -695,21 +937,7 @@ function renderStats() {
 <div class="border-t border-white/10 pt-4">
   <p class="text-on-surface-variant text-xs mb-3 font-label-numeric tracking-wider">POR RAREZA</p>
   <div class="space-y-3">
-    <div class="flex items-center gap-3 text-sm">
-      <span class="material-symbols-outlined text-tertiary">emoji_events</span>
-      <span class="text-on-surface-variant">Campeones</span>
-      <span class="text-primary font-label-numeric ml-auto">10 / 18</span>
-    </div>
-    <div class="flex items-center gap-3 text-sm">
-      <span class="material-symbols-outlined text-tertiary">star</span>
-      <span class="text-on-surface-variant">Actuales</span>
-      <span class="text-primary font-label-numeric ml-auto">2 / 5</span>
-    </div>
-    <div class="flex items-center gap-3 text-sm">
-      <span class="material-symbols-outlined text-tertiary">auto_awesome</span>
-      <span class="text-on-surface-variant">Promesas</span>
-      <span class="text-primary font-label-numeric ml-auto">0 / 3</span>
-    </div>
+    ${renderStatsPorCategoria()}
   </div>
 </div>`;
 }
@@ -751,6 +979,25 @@ async function pasteSticker(btnElement) {
 
   updateProgressBar();
   updatePilonCounter();
+
+  if (calcularProgreso() === 100) {
+    const modal = document.getElementById('completion-modal');
+    if (modal) modal.classList.remove('hidden-view');
+  }
+}
+
+function cerrarCompletado() {
+  const modal = document.getElementById('completion-modal');
+  if (modal) modal.classList.add('hidden-view');
+}
+
+async function logout() {
+  await supabaseClient.auth.signOut({ scope: 'local' });
+  localStorage.removeItem('csydp_pegadas');
+  localStorage.removeItem('csydp_sueltas');
+  localStorage.removeItem('csydp_ultimo_sobre');
+  localStorage.removeItem('csydp_profile');
+  window.location.replace('login.html?logout=1');
 }
 
 // ===================== INIT =====================
@@ -765,7 +1012,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const el = document.getElementById(`album-page-${page.id}`);
     if (el) {
       el.innerHTML = renderAlbumPage(page);
-      el.classList.remove('hidden');
     }
   });
 
@@ -775,4 +1021,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   updatePilonCounter();
   updateProgressBar();
   checkDailyPack();
+  const ls = document.getElementById('loading-screen');
+  if (ls) ls.classList.add('hidden');
 });

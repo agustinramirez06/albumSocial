@@ -2,9 +2,28 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>CSYDP ALBUM - Digital Collector</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;800&amp;family=Hanken+Grotesk:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+#loading-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: #121414;
+  transition: opacity 0.4s ease;
+}
+#loading-screen.hidden { opacity: 0; pointer-events: none; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+.loading-spin {
+  width: 30px; height: 30px;
+  border: 3px solid rgba(195,198,215,0.15);
+  border-top-color: #c3c6d7;
+  border-radius: 50%;
+  animation: loading-spin 0.8s linear infinite;
+}
+</style>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -92,8 +111,14 @@
         }
     </script>
 <link href="../Styles/styles.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="font-body-lg text-body-lg">
+<div id="loading-screen">
+  <img src="../assets/social-escudo-estrelladorada.png" alt="CSYDP"
+    style="width:150px;height:150px;object-fit:contain;margin-bottom:36px;filter:drop-shadow(0 0 20px rgba(195,198,215,0.2));">
+  <div class="loading-spin" style="width:60px;height:60px;border-width:4px;"></div>
+</div>
 <!-- Top App Bar -->
 <header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface/40">
 <div class="flex justify-between items-center px-grid-gutter py-4 w-full max-w-container-max-width mx-auto">
@@ -102,15 +127,16 @@
             </h1>
 <div class="flex items-center gap-4">
 <div class="hidden md:flex items-center gap-3 mr-2 cursor-pointer hover:text-primary transition-colors relative" onclick="togglePilon()">
-<span class="material-symbols-outlined">inventory_2</span>
-<span class="font-body-sm text-[12px]">Pilón</span>
+<span class="material-symbols-outlined text-[28px]">inventory_2</span>
+<span class="font-body-sm text-[14px]">Pilón</span>
 <span id="pilon-badge-desktop" class="pilon-badge hidden">0</span>
 </div>
-<div class="hidden md:flex items-center mr-2 cursor-pointer hover:text-primary transition-colors" onclick="toggleStatsModal()">
-<span class="material-symbols-outlined">bar_chart</span>
+<div class="hidden md:flex items-center gap-3 mr-2 cursor-pointer hover:text-primary transition-colors" onclick="toggleStatsModal()">
+<span class="material-symbols-outlined text-[28px]">bar_chart</span>
+<span class="font-body-sm text-[14px]">Progreso</span>
 </div>
 <div class="hidden md:flex flex-col items-end mr-2">
-<span class="font-headline-md text-primary leading-tight" id="profile-username">Jugador</span>
+<span class="font-headline-md text-primary leading-tight" id="profile-username"></span>
 </div>
 <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary-container shadow-lg cursor-pointer" onclick="toggleProfileModal()">
 <img id="profile-avatar" alt="User Avatar" class="w-full h-full object-cover">
@@ -172,13 +198,22 @@
 </div>
 </main>
 <!-- Album View - Page 1 -->
-<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view hidden" id="album-page-1"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-1"></main>
 <!-- Album View - Page 2 -->
-<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view hidden" id="album-page-2"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-2"></main>
+<!-- Album View - Pages 3-7 (Actuales + Promesas) -->
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-3"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-4"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-5"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-6"></main>
+<main class="view-transition min-h-screen pt-32 pb-24 px-4 overflow-y-auto hidden-view album-page" id="album-page-7"></main>
 <!-- Pack Result Modal -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="pack-modal">
   <!-- Step 1: Closed Pack -->
-  <div id="pack-step-closed" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20">
+  <div id="pack-step-closed" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20 relative">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+      <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
     <img src="../assets/sobre-album.png" alt="Sobre" class="w-64 h-auto object-contain floating-pack">
     <button class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3" onclick="animarApertura()" type="button">
       <span class="material-symbols-outlined">auto_awesome</span>
@@ -186,7 +221,10 @@
     </button>
   </div>
   <!-- Step 2: Revealing stickers -->
-  <div id="pack-step-reveal" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20">
+  <div id="pack-step-reveal" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20 relative">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+      <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
     <h2 class="font-headline-md text-primary text-center">FIGURITA <span id="pack-current-num">1</span> DE 5</h2>
     <div id="sticker-stack" class="relative w-72 h-96"></div>
     <button id="btn-siguiente" class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all" onclick="siguienteFigurita()" type="button">
@@ -194,7 +232,10 @@
     </button>
   </div>
   <!-- Step 3: All stickers revealed -->
-  <div id="pack-step-complete" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 w-full mx-4 border border-primary/20">
+  <div id="pack-step-complete" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 w-full mx-4 border border-primary/20 relative">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+      <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
     <h2 class="font-headline-md text-primary text-center">ABRISTE TU SOBRE</h2>
     <div id="pack-stickers-grid" class="flex justify-center gap-3 flex-nowrap"></div>
     <button class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all" onclick="cerrarModalCompleto()" type="button">
@@ -266,26 +307,44 @@
       <img id="profile-modal-avatar" alt="Avatar" class="w-full h-full object-cover">
     </div>
     <div class="text-center w-full">
-      <h2 class="font-headline-md text-primary text-2xl" id="profile-modal-username">Jugador</h2>
+      <h2 class="font-headline-md text-primary text-2xl" id="profile-modal-username"></h2>
     </div>
     <div class="w-full space-y-4 border-t border-white/10 pt-4">
       <div class="flex items-center gap-3 text-sm">
         <span class="material-symbols-outlined text-on-surface-variant">mail</span>
         <span class="text-on-surface-variant">Correo:</span>
-        <span class="text-primary ml-auto" id="profile-modal-email">tucorreo@ejemplo.com</span>
+        <span class="text-primary ml-auto" id="profile-modal-email"></span>
       </div>
       <div class="flex items-center gap-3 text-sm">
         <span class="material-symbols-outlined text-on-surface-variant">calendar_month</span>
         <span class="text-on-surface-variant">Miembro desde:</span>
-        <span class="text-primary ml-auto" id="profile-modal-member-since">—</span>
+        <span class="text-primary ml-auto" id="profile-modal-member-since"></span>
       </div>
-      <div class="flex items-center gap-3 text-sm">
-        <span class="material-symbols-outlined text-on-surface-variant">lock</span>
-        <span class="text-on-surface-variant">Contraseña:</span>
-        <span class="text-primary ml-auto font-label-numeric tracking-widest" id="profile-modal-password">••••••••</span>
-      </div>
+
     </div>
+    <button class="w-full bg-error-container/20 text-error font-display-lg-mobile text-lg py-3 rounded-lg border border-error/30 hover:bg-error-container/40 transition-all flex items-center justify-center gap-2" onclick="logout()" type="button">
+      <span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
+      CERRAR SESIÓN
+    </button>
     <button class="w-full bg-surface-container-high text-on-surface-variant font-display-lg-mobile text-lg py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-all" onclick="toggleProfileModal()" type="button">
+      CERRAR
+    </button>
+  </div>
+</div>
+<!-- Completion Modal -->
+<div class="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="completion-modal">
+  <div class="glass-panel rounded-xl p-10 max-w-md w-full mx-4 border border-tertiary/40 flex flex-col items-center gap-6 text-center">
+    <span class="material-symbols-outlined text-7xl text-tertiary" style="font-size: 72px;">emoji_events</span>
+    <h2 class="font-display-lg-mobile text-3xl text-tertiary uppercase">¡FELICIDADES!</h2>
+    <p class="text-on-surface-variant text-body-sm leading-relaxed">
+      Has completado el <span class="text-primary font-bold">100%</span> del álbum del<br>
+      <span class="text-primary font-bold">Club Social y Deportivo Pila</span>
+    </p>
+    <a id="btn-compartir-wspp" href="#" target="_blank" class="w-full bg-green-600 hover:bg-green-500 text-white font-display-lg-mobile text-lg py-4 rounded-lg shadow-[0_4px_0_#15803d] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3">
+      <span class="material-symbols-outlined">share</span>
+      COMPARTIR EN WHATSAPP
+    </a>
+    <button class="w-full bg-surface-container-high text-on-surface-variant font-display-lg-mobile text-lg py-3 rounded-lg border border-white/10 hover:bg-white/5 transition-all" onclick="cerrarCompletado()" type="button">
       CERRAR
     </button>
   </div>

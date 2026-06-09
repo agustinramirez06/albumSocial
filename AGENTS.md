@@ -8,29 +8,39 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 ```
 /
 ├── index/
-│   ├── index.html          # App NUEVA (Tailwind dark, diseño moderno, activa)
-│   ├── index2.html         # Copia / respaldo de index.html (usa mismas localStorage keys)
-│   └── login.html          # App VIEJA (login con Supabase, css simple)
+│   ├── index.html            # App principal (Tailwind dark, diseño moderno, activa)
+│   ├── index2.html           # Copia / respaldo de index.html (usa mismas localStorage keys)
+│   └── login.html            # App VIEJA (login con Supabase, css simple)
 ├── App/
-│   └── login.js            # Solo tiene cambiarPantalla()
+│   ├── app.js                # Todo el JS de la app nueva (~800 líneas)
+│   └── login.js              # Solo tiene cambiarPantalla()
 ├── Styles/
-│   └── login.css           # Estilos de la app vieja
-├── campeones2017/          # Imágenes de figuritas (0.png a 19.png) + fotos
-├── figuritas2017/          # Otras imágenes de figuritas
-├── figuritasVacias/        # Imágenes de casilleros vacíos (0.png a 19.png)
-├── jugadores Actuales/     # Fotos de jugadores actuales
-├── promesas/               # Fotos de juveniles / promesas
-├── escudos-historicos/     # Escudos del club (viejo, intermedio, actual)
-└── assets/                 # Sobres y recursos generales
+│   ├── styles.css            # CSS custom de la app nueva
+│   └── login.css             # Estilos de la app vieja
+├── campeones2017/            # Ya NO se usa en runtime (imágenes desde bucket)
+├── figuritasVacias/          # Imágenes de casilleros vacíos (0.png a 19.png)
+├── jugadores Actuales/       # Fotos de jugadores actuales (local, sin migrar)
+├── promesas/                 # Fotos de juveniles / promesas (local, sin migrar)
+├── escudos-historicos/       # Escudos del club (local, sin migrar)
+└── assets/                   # Sobres y recursos generales
 ```
 
 ## STACK
 
-- HTML5 + CSS3 + Vanilla JS
+- HTML5 + CSS3 + Vanilla JS (tres archivos: index.html / app.js / styles.css)
 - Tailwind CSS (vía CDN con tailwind.config inline)
+- Supabase JS SDK v2 (vía CDN)
 - Google Fonts: Anybody, Hanken Grotesk, JetBrains Mono
 - Material Symbols (iconos)
 - **Sin frameworks ni build tools**
+
+## SUPABASE
+
+- Project ref: `wumpbrsnzoybwszjsbwv`
+- Storage bucket público: `images-album`
+  - Carpeta `stickers/` con `0.png` a `69.png` (comprimidos)
+  - URL base: `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album`
+- Anon key configurada en `app.js`
 
 ## FASES DEL PROYECTO
 
@@ -45,24 +55,32 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 - Countdown hasta medianoche (hora local)
 - Modo prueba: sin límite diario de sobres
 
-### FASE 2 (futuro) — Integración Supabase
-- Reemplazar `DataService` (localStorage) por llamadas Supabase
-- RPC `abrir_sobre_diario()` para obtener 5 figuritas diarias
-- CRUD en tabla `album_usuarios` (insertar al abrir sobre, update al pegar)
-- Control de `ultimo_sobre` en tabla `perfiles`
-- Login con Supabase Auth
-- Perfil de usuario con username, email, avatar y fecha de registro
-- El frontend ya está preparado con `DataService` como capa de abstracción
+### FASE 2 (en progreso) — Integración Supabase
+- [x] Bucket `images-album` creado y público con imágenes comprimidas
+- [x] Tabla `figuritas` creada y seedeada con 20 rows
+- [x] RLS policies para lectura pública de `figuritas` y storage
+- [x] Anon key real configurada en frontend
+- [x] `stickers{}` migrado a usar URLs del bucket (sin rutas locales)
+- [x] Helpers `getStickerUrl()`, `getEmptyUrl()`, `STICKER_FILE_IDS` creados
+- [x] Bug fixes: `reRenderAlbum()` sin innerHTML, `hidden` class duplicada eliminada
+- [ ] Reemplazar `DataService` (localStorage) por llamadas Supabase
+- [ ] RPC `abrir_sobre_diario()` para obtener 5 figuritas diarias
+- [ ] CRUD en tabla `album_usuarios` (insertar al abrir sobre, update al pegar)
+- [ ] Control de `ultimo_sobre` en tabla `perfiles`
+- [ ] Login con Supabase Auth
+- [ ] Perfil de usuario con username, email, avatar y fecha de registro
+- [ ] Service Worker para cachear imágenes del bucket
+- [ ] El frontend ya está preparado con `DataService` como capa de abstracción
 
-## BASE DE DATOS (Supabase — para Fase 2)
+## BASE DE DATOS (Supabase)
 
 ### `figuritas`
 | Columna     | Tipo   | Descripción                        |
 |-------------|--------|------------------------------------|
 | id          | bigint | Número fijo de figurita (PK)       |
 | nombre      | text   | Nombre del jugador/elemento        |
-| categoria   | text   | comun / historica / especial       |
-| imagen_url  | text   | URL de la imagen de la figurita    |
+| categoria   | text   | campeones / (futuro: actuales, promesas, historica, especial) |
+| imagen_url  | text   | URL de la imagen en bucket `images-album` |
 
 ### `perfiles`
 | Columna      | Tipo         | Descripción                              |
@@ -81,27 +99,31 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 | id_figurita  | bigint  | FK a figuritas                            |
 | esta_pegada  | boolean | false = suelta, true = pegada (def: false)|
 
-## APP NUEVA (`index.html`) — ARQUITECTURA
+## APP — ARQUITECTURA
 
 ### Estructura del HTML
-- **Header** fijo con logo + botón Pilón desktop + perfil de usuario (placeholder)
+- **Header** fijo con logo + botón Pilón desktop + botón Stats + perfil de usuario (dinámico)
 - **Main View** (`#main-view`): pantalla de inicio con cards de "Sobre Diario" y "Mi Colección"
-- **Album Pages** (`#album-page-1`, `#album-page-2`): renderizadas dinámicamente por JS
+- **Album Pages** (`#album-page-1`, `#album-page-2`): renderizadas dinámicamente por JS, siempre con `.album-page` (position: absolute)
 - **Pack Modal** (`#pack-modal`): overlay con 3 pasos (cerrado, revelar, completo)
 - **Pilón Overlay** (`#pilon-overlay`) + **Pilón Panel** (`#pilon-panel`): dropdown desde arriba con grilla de sueltas
-- **Bottom Nav** (mobile): Home, Álbum, Pilón, Profile
+- **Bottom Nav** (mobile): Home, Álbum, Pilón, Stats, Profile
 
 ### Sistema de Vistas (SPA)
-- Las vistas se ocultan/muestran con clases CSS: `hidden-view`, `slide-stage`
+- Las vistas se ocultan/muestran con la clase CSS `hidden-view`
+- Las páginas del álbum llevan siempre `.album-page` (`position: absolute` permanente) para evitar cambios de layout
 - `currentView` trackea la vista activa
 - `toggleAlbum(pageId, direction)`: navegación entre main-view y páginas del álbum
+  - Álbum→álbum: solo toggle `hidden-view` (crossfade vía `view-transition`)
+  - Main↔álbum: oculta todas las vistas excepto la target
 - `goToHome()`: vuelve a main-view
 
 ### Datos de Figuritas (`stickers{}`)
-Objeto clave-valor donde key = ID (string), value = `{ nombre, categoria, img, empty }`.
-IDs usan strings numéricas ('0'..'18') más 'special-2'.
-- `img`: ruta a la imagen a color (`../campeones2017/{id}.png`)
-- `empty`: ruta al casillero vacío (`../figuritasVacias/{id}.png`)
+Objeto clave-valor donde key = ID (string), value = `{ nombre, categoria }`.
+IDs usan strings numéricas ('0'..'69').
+- Las URLs de imágenes se resuelven dinámicamente con `getStickerUrl(id)` → bucket `images-album`
+- `getEmptyUrl(id)` → `../figuritasVacias/{id}.png`
+- `getStickerUrl(id)` y `getEmptyUrl(id)` usan el ID directamente como nombre de archivo
 
 ### Páginas del Álbum (`albumPages[]`)
 Array de objetos con:
@@ -110,9 +132,11 @@ Array de objetos con:
 - `photo`: imagen + label
 - `pageLabel`
 
-Actualmente 2 páginas:
+Actualmente 7 páginas:
 1. Campeones Clausura 2017 (stickerIds 1-10, especial: copa 0)
 2. Campeones Clausura 2017 (stickerIds 11-18 + 15, especial: escudo histórico)
+3–5. Jugadores Actuales (stickerIds 20-49, 10 por página + special 50/51/52)
+6–7. Promesas CSYDP (stickerIds 53-69, 10 por página)
 
 ### Sistema de Estados de Casilleros
 Cada `.sticker-slot` tiene un `data-state` que controla qué se muestra:
@@ -128,14 +152,16 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 ### Funciones JS existentes
 
 #### Render
-- `renderStickerSlot(id)`: genera HTML del casillero (consulta misFiguritasPegadas/Sueltas)
+- `renderStickerSlot(id)`: genera HTML del casillero (usa `stickerImages[id]` y `emptyImages[id]`)
 - `renderAlbumPage(page)`: renderiza página completa del álbum
 - `renderSidebar(sidebar)`: renderiza info del partido
 - `renderPhoto(photo)`: renderiza foto
 - `renderNavButtons(pageId)`: botones Anterior/Siguiente
 
 #### Navegación
-- `toggleAlbum(pageId, direction)`: navega entre main-view y páginas del álbum (con slide)
+- `toggleAlbum(pageId, direction)`: navega entre main-view y páginas del álbum
+  - Álbum→álbum: solo toggle `hidden-view` (crossfade vía `view-transition`)
+  - Main↔álbum: oculta todas las vistas excepto la target
 - `goToHome()`: vuelve a main-view
 
 #### Pack Opening
@@ -157,6 +183,13 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 - `irAPegar(stickerId)`: cierra pilón y navega al sticker específico con highlight
 - `findPageForSticker(stickerId)`: busca en qué página del álbum está un sticker
 
+#### Stats & Profile
+- `toggleStatsModal()`: abre/cierra modal de estadísticas
+- `renderStats()`: muestra pegadas, sueltas, páginas completadas, rareza
+- `toggleProfileModal()`: abre/cierra modal de perfil
+- `loadProfile()`: renderiza username y avatar desde `DataService.getProfile()`
+- `saveProfileFromModal()`: guarda cambios del perfil
+
 #### Progreso
 - `calcularProgreso()`: % de pegadas sobre total
 - `updateProgressBar()`: actualiza texto y barra en main-view
@@ -164,8 +197,33 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 #### Utilidades
 - `updateTimer()`: countdown hasta medianoche
 - `checkDailyPack()`: modo prueba (siempre habilita botón)
-- `reRenderAlbum()`: re-renderiza todas las páginas del álbum
+- `reRenderAlbum()`: actualiza data-state de slots sin reconstruir DOM
 - `initState()`: carga estado desde DataService (localStorage)
+
+### Animación del Álbum
+- Transición entre páginas: crossfade puro (solo `opacity 0.35s ease`)
+- No hay movimiento horizontal, ni `translateX`, ni `scale`, ni `rotate`
+- Las páginas del álbum tienen `.album-page` con `position: absolute` permanente en el HTML
+- No se usa más `slide-stage`, `slide-out-fade`, `slide-in-fade` ni ninguna clase dinámica de animación
+- El `<main>` de cada página tiene `.view-transition` que solo transiciona `opacity` (sin `will-change: transform`)
+- `toggleAlbum()` para álbum→álbum: `target.classList.remove('hidden-view')` → `currentEl.classList.add('hidden-view')`
+
+## SUPABASE CONFIG (app.js)
+
+```javascript
+const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
+
+function getStickerUrl(id) {
+  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
+}
+
+function getEmptyUrl(id) {
+  return `../figuritasVacias/${id}.png`;
+}
+```
 
 ### Countdown
 `setInterval(updateTimer, 1000)` calcula tiempo hasta medianoche.
@@ -187,7 +245,7 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 - `async/await` para operaciones asíncronas
 - Manipulación del DOM exclusivamente por IDs de elementos
 - Sin comentarios en el código (salvo separadores de secciones)
-- Sin librerías externas (excepto Supabase SDK en Fase 2)
+- Sin librerías externas (excepto Supabase SDK)
 
 ## PATRONES IMPORTANTES
 
@@ -230,6 +288,7 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 ## COMANDOS
 - No hay build system ni package.json (frontend vanilla)
 - Para desarrollo: abrir `index.html` en navegador
+- Modo prueba: agregar `?modo_prueba=true` a la URL (sin límite diario)
 - Sin tests configurados aún
 - Hard refresh (Ctrl+F5) para limpiar caché del navegador
 
@@ -244,23 +303,56 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - [x] State refresh desde localStorage al abrir pilón
 - [x] Re-render automático del panel al pegar mientras está abierto
 - [x] Animaciones: shimmer dorado, partículas titilantes, glow pulsante en album card
+- [x] Transición crossfade puro entre páginas del álbum (sin desplazamiento)
+- [x] Clase `.album-page` para position: absolute permanente en páginas del álbum
+- [x] Eliminación de `slide-stage` y animaciones con movimiento horizontal
+- [x] Simplificación de `toggleAlbum()` a toggle de `hidden-view`
 - [x] Countdown hasta medianoche
 - [x] Modo prueba (sin límite diario)
+- [x] Split monolítico a tres archivos (index.html / app.js / styles.css)
+- [x] Modal de perfil (username dinámico, avatar, email, member-since)
+- [x] Modal de stats (pegadas, sueltas, páginas completadas, rareza)
+
+### Completado (Fase 2)
+- [x] Bucket `images-album` creado y público con stickers comprimidos
+- [x] Tabla `figuritas` seedeada con 20 rows (categoria: campeones)
+- [x] RLS policies para lectura pública de `figuritas` y storage
+- [x] Anon key real configurada en frontend
+- [x] `stickers{}` migrado a bucket URLs (sin rutas locales hardcodeadas)
+- [x] Helpers `getStickerUrl()`, `getEmptyUrl()`, `STICKER_FILE_IDS` creados
+- [x] Bug fix: `reRenderAlbum()` sin innerHTML (solo actualiza data-state)
+- [x] Bug fix: `hidden` class duplicada eliminada de páginas del álbum
 
 ### Pendiente (Fase 2)
-- [ ] Reemplazar DataService por llamadas Supabase
-- [ ] Login con Supabase Auth
-- [ ] RPC `abrir_sobre_diario()`
-- [ ] CRUD en `album_usuarios`
-- [ ] Control `ultimo_sobre` desde servidor
-- [ ] Restaurar `checkDailyPack()` con límite real
-- [ ] Perfil de usuario desde Supabase (`perfiles` + `auth.users`)
+- [x] Reemplazar DataService por llamadas Supabase
+- [x] RPC `abrir_sobre_diario()` en SQL Editor
+- [x] CRUD en `album_usuarios` (insert al abrir sobre, update al pegar)
+- [x] Control `ultimo_sobre` desde servidor
+- [x] Login con Supabase Auth (registro / inicio de sesión)
+- [ ] Perfil de usuario desde `perfiles` + `auth.users`
 - [ ] Avatar upload a Supabase Storage bucket `avatars`
 - [ ] Reset de contraseña via `supabase.auth.resetPasswordForEmail()`
+- [ ] Service Worker para cachear imágenes del bucket (cache-first)
+- [ ] Restaurar `checkDailyPack()` con límite real (deshabilitar modo prueba)
+
+### Completado (Fase 3)
+- [x] Agregadas 50 stickers nuevos (IDs 20–69: 33 actuales + 17 promesas)
+- [x] Agregadas 5 páginas nuevas al álbum (págs. 3–5 actuales + specials 50/51/52, 6–7 promesas)
+- [x] Sistema de navegación adaptado automáticamente (prev/next dinámico)
+- [x] `renderStats()` dinámico por categoría (ya no hardcodeado)
+- [x] `watermarkSrc` condicional en páginas sin watermark
+- [x] Nuevas páginas sin sidebar/photo/specialSticker (solo grilla)
 
 ## NOTAS CRÍTICAS
+- Páginas del álbum: siempre tienen `.album-page` (`position: absolute; top:0; left:0; right:0`). Nunca cambian de posición.
+- Transición entre páginas: crossfade puro, sin movimiento. Clases en uso: `hidden-view` + `.view-transition{opacity}`.
+- NO hay clases `slide-stage`, `slide-in-*`, `slide-out-*` en el código actual.
 - `hidden-view` class: `opacity: 0; pointer-events: none; position: absolute !important;`
 - El pilón panel usa clases `.pilon-panel` (oculto por defecto) y `.pilon-panel.open` (visible con transición CSS)
-- `reRenderAlbum()` se llama después de `abrirSobre()` para que los nuevos stickers muestren "PEGAR"
+- `reRenderAlbum()` actualiza `data-state` de cada slot sin reconstruir el DOM (innerHTML ya no se usa)
 - `updatePilonCounter()` usa `querySelectorAll('.pilon-badge')` para actualizar badges mobile + desktop
 - No hay límite diario en modo prueba (`checkDailyPack()` siempre habilita el botón)
+- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{fileId}.png`
+- Los casilleros vacíos siguen siendo locales (`../figuritasVacias/{fileId}.png`)
+- `campeones2017/` ya no es necesario para el runtime (las imágenes van desde el bucket)
+- La anon key está hardcodeada en `app.js` (no debe compartirse públicamente, pero la de este proyecto es específica para este bucket público)

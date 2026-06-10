@@ -303,8 +303,12 @@
 <!-- Profile Modal -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="profile-modal">
   <div class="glass-panel rounded-xl p-8 max-w-md w-full mx-4 border border-primary/20 flex flex-col items-center gap-6">
-    <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-secondary-container shadow-xl flex-shrink-0">
+    <input type="file" id="avatar-upload-input" accept="image/*" hidden>
+    <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-secondary-container shadow-xl flex-shrink-0 cursor-pointer group relative" onclick="document.getElementById('avatar-upload-input').click()">
       <img id="profile-modal-avatar" alt="Avatar" class="w-full h-full object-cover">
+      <div class="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-2 shadow-lg pointer-events-none">
+        <span class="material-symbols-outlined text-surface text-base">edit</span>
+      </div>
     </div>
     <div class="text-center w-full">
       <h2 class="font-headline-md text-primary text-2xl" id="profile-modal-username"></h2>

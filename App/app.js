@@ -300,7 +300,7 @@ const DataService = {
           .single();
         if (data) {
           const profile = {
-            username: data.username || user.email?.split('@')[0] || 'Usuario',
+            username: data.username || user.email?.split('@')[0] || '',
             email: user.email || '',
             avatarUrl: data.avatar_url || DEFAULT_AVATAR,
             memberSince: data.created_at ? new Date(data.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
@@ -468,7 +468,7 @@ function renderNavButtons(pageId) {
   </button>`
   }
 </div>
-<div class="mt-8 text-center text-[10px] font-label-numeric text-white/20 uppercase tracking-widest">
+<div class="mt-8 text-center text-[13px] font-label-numeric text-white/40 uppercase tracking-widest">
   ${albumPages.find(p => p.id === pageId)?.pageLabel || ''}
 </div>`;
 }
@@ -828,7 +828,7 @@ async function loadProfile() {
   if (!profileData) {
     const { data: { user } } = await supabaseClient.auth.getUser().catch(() => ({ data: { user: null } }));
     profileData = {
-      username: user?.email?.split('@')[0] || 'Usuario',
+      username: user?.email?.split('@')[0] || '',
       email: user?.email || '',
       avatarUrl: DEFAULT_AVATAR,
       memberSince: new Date().toISOString().split('T')[0]
@@ -863,6 +863,27 @@ function renderProfileModal() {
   if (usernameEl) usernameEl.textContent = profileData.username;
   if (emailEl) emailEl.textContent = profileData.email;
   if (memberEl) memberEl.textContent = profileData.memberSince;
+}
+
+async function uploadAvatar(file) {
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const img = new Image();
+    img.onload = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 120;
+      canvas.height = 120;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, 120, 120);
+      const dataUri = canvas.toDataURL('image/webp', 0.7);
+      profileData.avatarUrl = dataUri;
+      await DataService.saveProfile(profileData);
+      document.getElementById('profile-modal-avatar').src = dataUri;
+      document.getElementById('profile-avatar').src = dataUri;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ===================== STATS =====================
@@ -1003,6 +1024,8 @@ async function logout() {
 // ===================== INIT =====================
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const { data: { user } } = await supabaseClient.auth.getUser().catch(() => ({ data: { user: null } }));
+  if (!user) { window.location.replace('/login.html'); return; }
   await initState();
 
   profileData = await DataService.getProfile();
@@ -1021,6 +1044,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   updatePilonCounter();
   updateProgressBar();
   checkDailyPack();
+  document.getElementById('avatar-upload-input').addEventListener('change', async (e) => {
+    if (e.target.files?.[0]) { await uploadAvatar(e.target.files[0]); e.target.value = ''; }
+  });
+
   const ls = document.getElementById('loading-screen');
   if (ls) ls.classList.add('hidden');
 });

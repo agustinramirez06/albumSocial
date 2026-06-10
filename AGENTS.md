@@ -7,22 +7,18 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 
 ```
 /
+├── vercel.json               # Configuración para deploy en Vercel
 ├── index/
-│   ├── index.html            # App principal (Tailwind dark, diseño moderno, activa)
-│   ├── index2.html           # Copia / respaldo de index.html (usa mismas localStorage keys)
-│   └── login.html            # App VIEJA (login con Supabase, css simple)
+│   ├── index.html            # App principal (Tailwind dark, SPA moderna)
+│   └── login.html            # Login/registro con Supabase Auth
 ├── App/
-│   ├── app.js                # Todo el JS de la app nueva (~800 líneas)
-│   └── login.js              # Solo tiene cambiarPantalla()
+│   ├── app.js                # ~1025 líneas: stickers, DataService, render, sorteo, stats, perfil
+│   └── login.js              # Login/registro con Supabase Auth
 ├── Styles/
-│   ├── styles.css            # CSS custom de la app nueva
-│   └── login.css             # Estilos de la app vieja
-├── campeones2017/            # Ya NO se usa en runtime (imágenes desde bucket)
-├── figuritasVacias/          # Imágenes de casilleros vacíos (0.png a 19.png)
-├── jugadores Actuales/       # Fotos de jugadores actuales (local, sin migrar)
-├── promesas/                 # Fotos de juveniles / promesas (local, sin migrar)
-├── escudos-historicos/       # Escudos del club (local, sin migrar)
-└── assets/                   # Sobres y recursos generales
+│   ├── styles.css            # Estilos del álbum, pilón, animaciones
+│   └── login.css             # Estilos de login/registro
+├── figuritasVacias/          # Imágenes de casilleros vacíos (0.png a 69.png)
+└── assets/                   # Logo, sobres, fotos del club, favicon
 ```
 
 ## STACK
@@ -55,22 +51,20 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 - Countdown hasta medianoche (hora local)
 - Modo prueba: sin límite diario de sobres
 
-### FASE 2 (en progreso) — Integración Supabase
-- [x] Bucket `images-album` creado y público con imágenes comprimidas
-- [x] Tabla `figuritas` creada y seedeada con 20 rows
+### FASE 2 (completa) — Integración Supabase
+- [x] Bucket `images-album` creado y público con stickers comprimidos
+- [x] Tabla `figuritas` seedeada con 20 rows
 - [x] RLS policies para lectura pública de `figuritas` y storage
 - [x] Anon key real configurada en frontend
-- [x] `stickers{}` migrado a usar URLs del bucket (sin rutas locales)
+- [x] `stickers{}` migrado a bucket URLs (sin rutas locales)
 - [x] Helpers `getStickerUrl()`, `getEmptyUrl()`, `STICKER_FILE_IDS` creados
 - [x] Bug fixes: `reRenderAlbum()` sin innerHTML, `hidden` class duplicada eliminada
-- [ ] Reemplazar `DataService` (localStorage) por llamadas Supabase
-- [ ] RPC `abrir_sobre_diario()` para obtener 5 figuritas diarias
-- [ ] CRUD en tabla `album_usuarios` (insertar al abrir sobre, update al pegar)
-- [ ] Control de `ultimo_sobre` en tabla `perfiles`
-- [ ] Login con Supabase Auth
-- [ ] Perfil de usuario con username, email, avatar y fecha de registro
-- [ ] Service Worker para cachear imágenes del bucket
-- [ ] El frontend ya está preparado con `DataService` como capa de abstracción
+- [x] DataService migrado a Supabase (getMisFiguritas, pegarFigurita, abrirSobre, yaAbrioHoy)
+- [x] CRUD en `album_usuarios` (insert al abrir sobre, update al pegar)
+- [x] Control `ultimo_sobre` desde servidor (perfiles.ultimo_sobre)
+- [x] Login con Supabase Auth
+- [x] Perfil de usuario desde `perfiles` + `auth.users`
+- [x] Frontend preparado con DataService como capa de abstracción
 
 ## BASE DE DATOS (Supabase)
 
@@ -92,12 +86,13 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 | created_at   | timestamptz  | Fecha de registro (default now())        |
 
 ### `album_usuarios`
-| Columna      | Tipo    | Descripción                               |
-|--------------|---------|-------------------------------------------|
-| id           | bigint  | Auto-incremental (PK)                     |
-| id_usuario   | uuid    | FK a perfiles                             |
-| id_figurita  | bigint  | FK a figuritas                            |
-| esta_pegada  | boolean | false = suelta, true = pegada (def: false)|
+| Columna      | Tipo         | Descripción                               |
+|--------------|--------------|-------------------------------------------|
+| id           | bigint       | Auto-incremental (PK)                     |
+| id_usuario   | uuid         | FK a perfiles                             |
+| id_figurita  | bigint       | FK a figuritas                            |
+| esta_pegada  | boolean      | false = suelta, true = pegada (def: false)|
+| fecha_creation | timestamptz | Default now()                             |
 
 ## APP — ARQUITECTURA
 
@@ -323,13 +318,21 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - [x] Bug fix: `reRenderAlbum()` sin innerHTML (solo actualiza data-state)
 - [x] Bug fix: `hidden` class duplicada eliminada de páginas del álbum
 
-### Pendiente (Fase 2)
+### Completado (Fase 2 — migración terminada)
 - [x] Reemplazar DataService por llamadas Supabase
 - [x] RPC `abrir_sobre_diario()` en SQL Editor
 - [x] CRUD en `album_usuarios` (insert al abrir sobre, update al pegar)
 - [x] Control `ultimo_sobre` desde servidor
 - [x] Login con Supabase Auth (registro / inicio de sesión)
-- [ ] Perfil de usuario desde `perfiles` + `auth.users`
+- [x] Perfil de usuario desde `perfiles` + `auth.users`
+- [x] Bug fix: `getMisFiguritas()` escribe arrays vacíos si Supabase devuelve [] (DELETE sync)
+- [x] Bug fix: sticker fantasma `special-2` eliminado de `stickers{}` (progreso llegaba al 98% max)
+- [x] UI: Header desktop con Pilón icono 28px + label 14px, botón "Progreso" agregado
+- [x] Loading screen: escudo 150x150px, spinner 60px
+- [x] `vercel.json` creado para deploy en Vercel
+- [x] Archivo `index.html` restaurado a versión completa (se había revertido)
+
+### Pendiente (post-v1)
 - [ ] Avatar upload a Supabase Storage bucket `avatars`
 - [ ] Reset de contraseña via `supabase.auth.resetPasswordForEmail()`
 - [ ] Service Worker para cachear imágenes del bucket (cache-first)

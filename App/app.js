@@ -362,7 +362,7 @@ function getStickerUrl(id) {
 
 function getEmptyUrl(id) {
   const fileId = STICKER_FILE_IDS[id] || id;
-  return `../figuritasVacias/${fileId}.png`;
+  return `figuritasVacias/${fileId}.png`;
 }
 
 const stickerImages = {};
@@ -997,7 +997,7 @@ async function logout() {
   localStorage.removeItem('csydp_sueltas');
   localStorage.removeItem('csydp_ultimo_sobre');
   localStorage.removeItem('csydp_profile');
-  window.location.replace('login.html?logout=1');
+  window.location.replace('/login.html?logout=1');
 }
 
 // ===================== INIT =====================

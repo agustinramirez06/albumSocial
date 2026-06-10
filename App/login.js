@@ -74,7 +74,7 @@ async function login(email, password) {
   localStorage.removeItem('csydp_sueltas');
   localStorage.removeItem('csydp_ultimo_sobre');
   localStorage.removeItem('csydp_profile');
-  window.location.replace('index.html');
+  window.location.replace('/');
 }
 
 async function register(email, password, username) {
@@ -109,7 +109,7 @@ async function register(email, password, username) {
     localStorage.removeItem('csydp_sueltas');
     localStorage.removeItem('csydp_ultimo_sobre');
     localStorage.removeItem('csydp_profile');
-    window.location.replace('index.html');
+    window.location.replace('/');
   } else {
     mostrarError('Registro exitoso. Revisá tu correo para confirmar la cuenta.');
     btnSubmit.innerHTML = '<span class="material-symbols-outlined">person_add</span> REGISTRARSE';
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!params.has('logout')) {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
-      window.location.replace('index.html');
+      window.location.replace('/');
     }
   }
 });

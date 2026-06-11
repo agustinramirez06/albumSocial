@@ -8,16 +8,14 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 ```
 /
 ├── vercel.json               # Configuración para deploy en Vercel
-├── index/
-│   ├── index.html            # App principal (Tailwind dark, SPA moderna)
-│   └── login.html            # Login/registro con Supabase Auth
+├── index.html                # App principal (Tailwind dark, SPA moderna) — raíz
+├── login.html                # Login/registro con Supabase Auth — raíz
 ├── App/
-│   ├── app.js                # ~1025 líneas: stickers, DataService, render, sorteo, stats, perfil
+│   ├── app.js                # ~1060 líneas: stickers, DataService, render, sorteo, stats, perfil, avatar
 │   └── login.js              # Login/registro con Supabase Auth
 ├── Styles/
 │   ├── styles.css            # Estilos del álbum, pilón, animaciones
 │   └── login.css             # Estilos de login/registro
-├── figuritasVacias/          # Imágenes de casilleros vacíos (0.png a 69.png)
 └── assets/                   # Logo, sobres, fotos del club, favicon
 ```
 
@@ -115,10 +113,10 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 
 ### Datos de Figuritas (`stickers{}`)
 Objeto clave-valor donde key = ID (string), value = `{ nombre, categoria }`.
-IDs usan strings numéricas ('0'..'69').
+IDs usan strings numéricas ('0'..'69'). Nota: ID '37' no existe (salto intencional).
 - Las URLs de imágenes se resuelven dinámicamente con `getStickerUrl(id)` → bucket `images-album`
-- `getEmptyUrl(id)` → `../figuritasVacias/{id}.png`
-- `getStickerUrl(id)` y `getEmptyUrl(id)` usan el ID directamente como nombre de archivo
+- `getEmptyUrl(id)` → bucket `images-album/figuritasVacias/{id}.png`
+- Las imágenes vacías se cargan vía prefetch durante el loading screen
 
 ### Páginas del Álbum (`albumPages[]`)
 Array de objetos con:
@@ -212,11 +210,13 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
 function getStickerUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
+  const fileId = STICKER_FILE_IDS[id] || id;
+  return `${SUPABASE_BUCKET_URL}/stickers/${fileId}.png`;
 }
 
 function getEmptyUrl(id) {
-  return `../figuritasVacias/${id}.png`;
+  const fileId = STICKER_FILE_IDS[id] || id;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.png`;
 }
 ```
 
@@ -331,9 +331,10 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - [x] Loading screen: escudo 150x150px, spinner 60px
 - [x] `vercel.json` creado para deploy en Vercel
 - [x] Archivo `index.html` restaurado a versión completa (se había revertido)
+- [x] Auth guard en init: redirige a /login.html si no hay sesión
+- [x] Subida de avatar vía Canvas 120px + base64 WebP a perfiles.avatar_url
 
 ### Pendiente (post-v1)
-- [ ] Avatar upload a Supabase Storage bucket `avatars`
 - [ ] Reset de contraseña via `supabase.auth.resetPasswordForEmail()`
 - [ ] Service Worker para cachear imágenes del bucket (cache-first)
 - [ ] Restaurar `checkDailyPack()` con límite real (deshabilitar modo prueba)
@@ -346,6 +347,19 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - [x] `watermarkSrc` condicional en páginas sin watermark
 - [x] Nuevas páginas sin sidebar/photo/specialSticker (solo grilla)
 
+### Completado (Deploy)
+- [x] Migración de index.html y login.html a la raíz del proyecto
+- [x] Paths de assets corregidos (../ eliminados)
+- [x] vercel.json apunta a /index.html
+
+### Completado (Post-deploy — layout + rendimiento)
+- [x] Ajuste proporcional de sizing del álbum para 100% zoom (zafable visualmente)
+- [x] Empty images migradas de local a bucket `images-album/figuritasVacias/` (comprimidas con pngquant)
+- [x] `getEmptyUrl()` apunta al bucket en vez de archivo local
+- [x] Prefetch dinámico de vacías durante loading screen (`rel="prefetch"`)
+- [x] Watermark condicional en páginas sin `watermarkSrc` (elimina `<img src="undefined">`)
+- [x] CSS cleanup: merge `.album-page-container` (3→1), removido CSS muerto (slide classes, keyframes, .profile-modal-avatar)
+
 ## NOTAS CRÍTICAS
 - Páginas del álbum: siempre tienen `.album-page` (`position: absolute; top:0; left:0; right:0`). Nunca cambian de posición.
 - Transición entre páginas: crossfade puro, sin movimiento. Clases en uso: `hidden-view` + `.view-transition{opacity}`.
@@ -356,6 +370,8 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - `updatePilonCounter()` usa `querySelectorAll('.pilon-badge')` para actualizar badges mobile + desktop
 - No hay límite diario en modo prueba (`checkDailyPack()` siempre habilita el botón)
 - Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{fileId}.png`
-- Los casilleros vacíos siguen siendo locales (`../figuritasVacias/{fileId}.png`)
+- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{fileId}.png` (comprimidas con pngquant, prefetch dinámico en loading screen)
 - `campeones2017/` ya no es necesario para el runtime (las imágenes van desde el bucket)
 - La anon key está hardcodeada en `app.js` (no debe compartirse públicamente, pero la de este proyecto es específica para este bucket público)
+- El avatar se guarda como data URI base64 en `perfiles.avatar_url` (sin usar Storage)
+- Alias en vercel.json: rewrite `/(.*)` → `/index.html` para SPA routing

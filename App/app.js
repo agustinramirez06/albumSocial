@@ -246,22 +246,13 @@ const DataService = {
       porCategoria[s.categoria].push(id);
     }
 
-    const totalDisp = Object.values(porCategoria).flat().length;
-    if (totalDisp === 0) throw new Error('Completaste el álbum');
-
-    const pesos = { campeones: 1, actuales: 3, promesas: 3 };
-    const categorias = Object.keys(porCategoria);
+    const todasFaltantes = Object.values(porCategoria).flat();
+    if (todasFaltantes.length === 0) throw new Error('Completaste el álbum');
 
     const nuevas = [];
-    for (let i = 0; i < 5; i++) {
-      const catsDisponibles = categorias.filter(c => porCategoria[c].length > 0);
-      if (catsDisponibles.length === 0) break;
-
-      const poolCats = catsDisponibles.flatMap(c => Array(pesos[c] || 1).fill(c));
-      const catElegida = poolCats[Math.floor(Math.random() * poolCats.length)];
-      const idx = Math.floor(Math.random() * porCategoria[catElegida].length);
-      const elegido = porCategoria[catElegida].splice(idx, 1)[0];
-      nuevas.push(elegido);
+    for (let i = 0; i < 5 && todasFaltantes.length > 0; i++) {
+      const idx = Math.floor(Math.random() * todasFaltantes.length);
+      nuevas.push(todasFaltantes.splice(idx, 1)[0]);
     }
 
     for (const id of nuevas) {
@@ -362,7 +353,7 @@ function getStickerUrl(id) {
 
 function getEmptyUrl(id) {
   const fileId = STICKER_FILE_IDS[id] || id;
-  return `figuritasVacias/${fileId}.png`;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.png`;
 }
 
 const stickerImages = {};
@@ -399,16 +390,16 @@ function renderStickerSlot(id) {
   return `
 <div class="sticker-slot relative flex flex-col items-center justify-center" data-sticker-id="${id}" data-state="${state}">
   <div class="state-vacio absolute inset-0 flex items-center justify-center">
-    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-50 p-1" loading="lazy">
+    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-50 p-0.5" loading="lazy">
   </div>
   <div class="state-pegar absolute inset-0 cursor-pointer" onclick="pasteSticker(this)">
-    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-30 p-1">
+    <img src="${emptyImages[id]}" alt="Vacio" class="w-full h-full object-contain opacity-30 p-0.5">
     <div class="absolute inset-0 flex items-center justify-center">
       <span class="pegar-badge">PEGAR</span>
     </div>
   </div>
-  <div class="state-imagen absolute inset-0">
-    <img src="${imgSrc}" alt="Sticker" class="w-full h-full object-contain p-1" loading="lazy">
+  <div class="state-imagen absolute inset-0 cursor-pointer" onclick="abrirStickerModal('${id}')">
+    <img src="${imgSrc}" alt="Sticker" class="w-full h-full object-contain p-0.5" loading="lazy">
   </div>
   <div class="state-pegando absolute inset-0 flex items-center justify-center">
     <span class="material-symbols-outlined spin text-secondary-container" style="font-size: 48px;">progress_activity</span>
@@ -419,21 +410,21 @@ function renderStickerSlot(id) {
 function renderSidebar(sidebar) {
   if (sidebar.type === 'match') {
     return `
-<div class="glass-panel p-4 rounded-lg border-l-4 border-secondary-container">
-  <h4 class="font-label-numeric text-[11px] text-white font-bold leading-tight mb-2">${sidebar.title}</h4>
-  <p class="text-primary text-[10px] font-bold mb-1">${sidebar.score}</p>
-  <ul class="text-[10px] space-y-1">
+<div class="glass-panel p-2.5 rounded-lg border-l-4 border-secondary-container">
+  <h4 class="font-label-numeric text-[9px] text-white font-bold leading-tight mb-1">${sidebar.title}</h4>
+  <p class="text-primary text-[9px] font-bold mb-1">${sidebar.score}</p>
+  <ul class="text-[9px] space-y-1">
     ${sidebar.goals.map(g => `
-    <li class="flex items-center gap-2 text-secondary">${g} <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: &quot;FILL&quot; 1;">sports_soccer</span></li>
+    <li class="flex items-center gap-2 text-secondary">${g} <span class="material-symbols-outlined text-[9px]" style="font-variation-settings: &quot;FILL&quot; 1;">sports_soccer</span></li>
     `).join('')}
   </ul>
 </div>`;
   }
   return `
-<div class="glass-panel p-4 rounded-lg border-l-4 border-secondary-container">
-  <h4 class="font-label-numeric text-[11px] text-white font-bold leading-tight mb-2">${sidebar.title}</h4>
-  <p class="text-primary text-[10px] font-bold mb-1">${sidebar.subtitle}</p>
-  <p class="text-[10px] text-on-surface-variant leading-relaxed">${sidebar.description}</p>
+<div class="glass-panel p-2.5 rounded-lg border-l-4 border-secondary-container">
+  <h4 class="font-label-numeric text-[9px] text-white font-bold leading-tight mb-1">${sidebar.title}</h4>
+  <p class="text-primary text-[9px] font-bold mb-1">${sidebar.subtitle}</p>
+  <p class="text-[9px] text-on-surface-variant leading-relaxed">${sidebar.description}</p>
 </div>`;
 }
 
@@ -452,55 +443,54 @@ function renderNavButtons(pageId) {
   const prevPage = idx > 0 ? albumPages[idx - 1].id : 0;
   const nextPage = idx < albumPages.length - 1 ? albumPages[idx + 1].id : null;
   return `
-<div class="relative z-10 mt-16 flex justify-center items-center gap-12">
-  <button class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all group" onclick="toggleAlbum(${prevPage}, 'prev')" type="button">
-    <span class="material-symbols-outlined text-4xl group-hover:-translate-x-1 transition-transform">undo</span>
-    <span class="font-display-lg-mobile text-xl uppercase italic font-bold">Anterior</span>
+<div class="relative z-10 mt-3 flex justify-center items-center gap-12">
+  <button class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-all group" onclick="toggleAlbum(${prevPage}, 'prev')" type="button">
+    <span class="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">undo</span>
+    <span class="font-display-lg-mobile text-sm uppercase italic font-bold">Anterior</span>
   </button>
   ${nextPage !== null
-    ? `<button class="flex items-center gap-3 text-secondary-container hover:brightness-110 transition-all group" onclick="toggleAlbum(${nextPage}, 'next')" type="button">
-    <span class="font-display-lg-mobile text-xl uppercase italic font-bold">Siguiente</span>
-    <span class="material-symbols-outlined text-4xl group-hover:translate-x-1 transition-transform">redo</span>
+    ? `<button class="flex items-center gap-1.5 text-secondary-container hover:brightness-110 transition-all group" onclick="toggleAlbum(${nextPage}, 'next')" type="button">
+    <span class="font-display-lg-mobile text-sm uppercase italic font-bold">Siguiente</span>
+    <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">redo</span>
   </button>`
-    : `<button class="flex items-center gap-3 text-on-surface-variant/30 cursor-not-allowed transition-all group" type="button">
-    <span class="font-display-lg-mobile text-xl uppercase italic font-bold">Siguiente</span>
-    <span class="material-symbols-outlined text-4xl group-hover:translate-x-1 transition-transform">redo</span>
+    : `<button class="flex items-center gap-1.5 text-on-surface-variant/30 cursor-not-allowed transition-all group" type="button">
+    <span class="font-display-lg-mobile text-sm uppercase italic font-bold">Siguiente</span>
+    <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">redo</span>
   </button>`
   }
 </div>
-<div class="mt-8 text-center text-[13px] font-label-numeric text-white/40 uppercase tracking-widest">
+<div class="mt-3 text-center text-[9px] font-label-numeric text-white/40 uppercase tracking-widest">
   ${albumPages.find(p => p.id === pageId)?.pageLabel || ''}
 </div>`;
 }
 
 function renderAlbumPage(page) {
+  const leftCol = page.specialStickerId
+    ? `<div class="w-full lg:w-36 flex-shrink-0 flex justify-center"><div class="w-36">${renderStickerSlot(page.specialStickerId)}</div></div>`
+    : `<div class="hidden lg:block lg:w-36 flex-shrink-0"></div>`;
+  const rightCol = (page.sidebar || page.photo)
+    ? `<div class="w-full lg:w-56 flex-shrink-0 space-y-4">${page.sidebar ? renderSidebar(page.sidebar) : ''}${page.photo ? renderPhoto(page.photo) : ''}</div>`
+    : `<div class="hidden lg:block lg:w-56 flex-shrink-0"></div>`;
   return `
-<div class="max-w-[1500px] mx-auto album-page-container rounded-xl shadow-2xl p-4 md:p-6 min-h-[700px]">
-  <img alt="Background Shield" class="watermark-shield" src="${page.watermarkSrc}">
+<div class="max-w-[1100px] mx-auto album-page-container rounded-xl shadow-2xl p-1.5 min-h-[260px]">
+  ${page.watermarkSrc ? `<img alt="Background Shield" class="watermark-shield" src="${page.watermarkSrc}">` : ''}
   <div class="crease hidden md:block"></div>
   <button class="absolute top-4 right-4 z-20 text-on-surface-variant hover:text-primary transition-colors" onclick="goToHome()" type="button">
     <span class="material-symbols-outlined text-3xl">arrow_back</span>
   </button>
-  <header class="relative z-10 text-center mb-12">
-    <h2 class="font-display-lg text-display-lg text-primary uppercase tracking-tight border-b-2 border-secondary-container inline-block pb-2">
+  <header class="relative z-10 text-center mb-2">
+    <h2 class="font-display-lg text-[20px] text-primary uppercase tracking-tight border-b-2 border-secondary-container inline-block pb-0.5">
       ${page.title}
     </h2>
   </header>
-  <div class="relative z-10 flex flex-col lg:flex-row gap-8 items-start justify-between">
-    <div class="w-full lg:w-48 flex-shrink-0 flex justify-center">
-      <div class="w-48">
-        ${page.specialStickerId ? renderStickerSlot(page.specialStickerId) : ''}
-      </div>
-    </div>
-    <div class="flex-grow">
+  <div class="relative z-10 flex flex-col lg:flex-row gap-2 items-start justify-between">
+    ${leftCol}
+    <div class="flex-grow min-w-0">
       <div class="album-grid" style="--grid-cols: ${page.gridCols}">
         ${page.stickerIds.map(id => renderStickerSlot(id)).join('')}
       </div>
     </div>
-    <div class="w-full lg:w-80 flex-shrink-0 space-y-4">
-      ${page.sidebar ? renderSidebar(page.sidebar) : ''}
-      ${page.photo ? renderPhoto(page.photo) : ''}
-    </div>
+    ${rightCol}
   </div>
   ${renderNavButtons(page.id)}
 </div>`;
@@ -701,8 +691,76 @@ function mostrarTodas() {
 <div class="flex flex-col items-center gap-1 sticker-reveal flex-shrink min-w-0">
   <img src="${stickerImages[id] || ''}" alt="${s.nombre}" class="w-32 h-44 md:w-52 md:h-60 object-contain drop-shadow-xl">
   <span class="font-label-numeric text-[14px] text-primary truncate max-w-full">${s.nombre}</span>
+  <button class="share-btn flex items-center gap-1 text-on-surface-variant hover:text-primary transition-all mt-0.5" onclick='abrirCompartir("${id}")' type="button">
+    <span class="material-symbols-outlined text-[16px]">share</span>
+    <span class="font-label-numeric text-[9px] tracking-wider">COMPARTIR</span>
+  </button>
 </div>`;
   }).join('');
+}
+
+let compartirActualId = null;
+
+function abrirCompartir(id) {
+  compartirActualId = id;
+  const s = stickers[id] || { nombre: '' };
+  const imgEl = document.getElementById('compartir-img');
+  const nameEl = document.getElementById('compartir-nombre');
+  if (imgEl) imgEl.src = stickerImages[id] || '';
+  if (nameEl) nameEl.textContent = s.nombre;
+  document.getElementById('compartir-modal').classList.remove('hidden-view');
+}
+
+function cerrarCompartir() {
+  document.getElementById('compartir-modal').classList.add('hidden-view');
+  compartirActualId = null;
+}
+
+function getMensajeCompartir() {
+  const s = stickers[compartirActualId] || { nombre: '' };
+  return `¡Mirá! Conseguí a ${s.nombre} en el Album De El CSYDP ⚪🔴🔵 \nhttps://albumcsydp.vercel.app/sticker/${compartirActualId}`;
+}
+
+async function compartirCopiar() {
+  try {
+    await navigator.clipboard.writeText(getMensajeCompartir());
+    mostrarToast('✅ Link copiado');
+  } catch {
+    mostrarToast('❌ No se pudo copiar');
+  }
+}
+
+function compartirWhatsApp() {
+  window.open(`https://wa.me/?text=${encodeURIComponent(getMensajeCompartir())}`, '_blank');
+}
+
+async function compartirWeb() {
+  const s = stickers[compartirActualId] || { nombre: '' };
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `Álbum CSYDP - ${s.nombre}`,
+        text: getMensajeCompartir()
+      });
+    } catch {}
+  } else {
+    await compartirCopiar();
+  }
+}
+
+let toastTimeout = null;
+
+function mostrarToast(texto) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toast.textContent = texto;
+  toast.classList.remove('opacity-0', 'pointer-events-none');
+  toast.classList.add('opacity-100');
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('opacity-100');
+    toast.classList.add('opacity-0', 'pointer-events-none');
+  }, 2500);
 }
 
 function cerrarModalCompleto() {
@@ -1012,6 +1070,41 @@ function cerrarCompletado() {
   if (modal) modal.classList.add('hidden-view');
 }
 
+const MENSAJE_COMPLETADO = '🎉 ¡Completé el álbum del Club Social y Deportivo Pila! 🏆\nhttps://albumcsydp.vercel.app/';
+
+async function completadoCopiar() {
+  try {
+    await navigator.clipboard.writeText(MENSAJE_COMPLETADO);
+    mostrarToast('✅ Link copiado');
+  } catch {
+    mostrarToast('❌ No se pudo copiar');
+  }
+}
+
+function completadoWhatsApp() {
+  window.open(`https://wa.me/?text=${encodeURIComponent(MENSAJE_COMPLETADO)}`, '_blank');
+}
+
+async function completadoWeb() {
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Álbum CSYDP', text: MENSAJE_COMPLETADO });
+    } catch {}
+  } else {
+    await completadoCopiar();
+  }
+}
+
+function abrirStickerModal(id) {
+  const img = document.getElementById('sticker-modal-img');
+  if (img) img.src = stickerImages[id] || '';
+  document.getElementById('sticker-modal').classList.remove('hidden-view');
+}
+
+function cerrarStickerModal() {
+  document.getElementById('sticker-modal').classList.add('hidden-view');
+}
+
 async function logout() {
   await supabaseClient.auth.signOut({ scope: 'local' });
   localStorage.removeItem('csydp_pegadas');
@@ -1030,6 +1123,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   profileData = await DataService.getProfile();
   await loadProfile();
+
+  Object.values(emptyImages).forEach(url => {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.as = 'image';
+    link.href = url;
+    document.head.appendChild(link);
+  });
 
   albumPages.forEach(page => {
     const el = document.getElementById(`album-page-${page.id}`);

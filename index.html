@@ -119,6 +119,14 @@
     style="width:150px;height:150px;object-fit:contain;margin-bottom:36px;filter:drop-shadow(0 0 20px rgba(195,198,215,0.2));">
   <div class="loading-spin" style="width:60px;height:60px;border-width:4px;"></div>
 </div>
+<!-- Rotate Overlay -->
+<div class="fixed inset-0 z-[9999] bg-surface px-8 hidden" id="rotate-overlay">
+  <img src="assets/social-escudo-estrelladorada.png" alt="CSYDP" class="w-28 h-28 object-contain mb-8">
+  <h1 class="font-display-lg-mobile text-primary text-4xl mb-2">ALBUM CSYDP</h1>
+  <p class="text-on-surface-variant font-body-sm mb-8">Club Social y Deportivo Pila</p>
+  <span class="material-symbols-outlined text-6xl text-secondary-container rotate-icon">screen_rotation</span>
+  <p class="text-primary font-headline-md mt-6">Rotá el teléfono<br>para empezar</p>
+</div>
 <!-- Top App Bar -->
 <header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface/40">
 <div class="flex justify-between items-center px-grid-gutter py-4 w-full max-w-container-max-width mx-auto">
@@ -156,7 +164,7 @@
 <div class="glass-panel rounded-xl p-6 flex flex-col items-center justify-between group hover:border-primary/40 transition-all duration-500">
 <div class="text-center">
 <h2 class="font-display-lg-mobile text-primary mb-1">SOBRE DIARIO</h2>
-<p id="subtitulo-sobre-diario" class="text-on-surface-variant font-body-sm">Vuelve mañana para más stickers gratuitos</p>
+<p id="subtitulo-sobre-diario" class="text-on-surface-variant font-body-sm">Cargando...</p>
 </div>
 <div class="relative py-6 w-full flex justify-center">
 <div class="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-75 group-hover:scale-100 transition-transform"></div>
@@ -174,7 +182,7 @@
 </div>
 <!-- Album Access Card -->
 <div class="relative overflow-hidden border rounded-xl flex flex-col items-center justify-between transition-all duration-500 cursor-pointer group h-full album-card-glow" onclick="toggleAlbum(1)"><div class="absolute inset-0 z-0">
-    <img alt="Album Cover Background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDer3_r6TUUVjSb6xON_eYn3i4-6KhOEIREXM64uf53hWl3CbqWK4Ud7INC3OulFn0Gz1cJgYYtCS0G2yO_HQJPjr0CS9tI9l0DcG8fxX5GLB6Byv7UhMov8Hw1_0bOWWMgsM7GWMHyO_CHjcnQIlgGtQe13XD-iGgo8b1OD6f88BAQqktYTd_YLHJeLm5KCMPYH-gLTmJy7nHi7VFb4pVXz2p-OnEela8rOE4ibQzQ941g84prlACz27qUTYkKCUdCfXkZWYWx2iOA">
+    <img alt="Album Cover Background" class="w-full h-full object-cover" src="assets/portada-album.png">
 </div>
 
 <div class="relative z-10 w-full h-full flex flex-col justify-between">
@@ -225,7 +233,7 @@
     <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
       <span class="material-symbols-outlined text-2xl">close</span>
     </button>
-    <h2 class="font-headline-md text-primary text-center">FIGURITA <span id="pack-current-num">1</span> DE 5</h2>
+    <h2 class="font-headline-md text-primary text-center">FIGURITA <span id="pack-current-num">1</span></h2>
     <div id="sticker-stack" class="relative w-72 h-96"></div>
     <button id="btn-siguiente" class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-xl py-4 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all" onclick="siguienteFigurita()" type="button">
       SIGUIENTE <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
@@ -306,7 +314,7 @@
     <input type="file" id="avatar-upload-input" accept="image/*" hidden>
     <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-secondary-container shadow-xl flex-shrink-0 cursor-pointer group relative" onclick="document.getElementById('avatar-upload-input').click()">
       <img id="profile-modal-avatar" alt="Avatar" class="w-full h-full object-cover">
-      <div class="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-2 shadow-lg pointer-events-none">
+      <div class="absolute -bottom-0.5 -right-0.5 bg-white rounded-full p-2 shadow-lg pointer-events-none landscape-edit-icon">
         <span class="material-symbols-outlined text-surface text-base">edit</span>
       </div>
     </div>
@@ -399,3 +407,4 @@
 <script src="App/app.js"></script>
 
 </body></html>
+  

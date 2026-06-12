@@ -317,6 +317,187 @@ body {
   transform: translateX(-50%) translateY(8px);
 }
 
+#rotate-overlay {
+  display: none;
+}
+#rotate-overlay:not(.hidden) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@keyframes rotate-hint {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(90deg); }
+  50% { transform: rotate(90deg); }
+  75% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.rotate-icon {
+  animation: rotate-hint 2.5s ease-in-out infinite;
+}
+
+@media (orientation: landscape) and (max-height: 450px) {
+  header .py-4 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+  header .gap-4 > .hidden { display: flex !important; }
+  header .flex-col.items-end { display: flex !important; }
+  header .w-12 { width: 2rem; height: 2rem; }
+  header .text-\\[28px\\] { font-size: 18px !important; }
+  header .text-\\[14px\\] { font-size: 10px !important; }
+  header h1 { font-size: 12px !important; }
+
+  nav.fixed.bottom-0 { display: none !important; }
+
+  .album-page { padding-top: 3rem !important; padding-bottom: 0.5rem !important; }
+  .album-page-container { padding: 0.25rem !important; }
+  .album-grid { grid-template-columns: repeat(var(--grid-cols, 5), minmax(0, 1fr)) !important; gap: 0.1rem; }
+  .sticker-slot { aspect-ratio: 3/4 !important; max-height: 100px !important; }
+  .sticker-slot img { border-radius: 2px; max-height: 100px !important; }
+  .sticker-slot .pegar-badge { font-size: 7px !important; padding: 2px 8px !important; }
+  .sticker-slot .state-vacio img,
+  .sticker-slot .state-pegar img { max-height: 100px !important; }
+  .album-page-container .mt-3 { margin-top: 0 !important; }
+  .album-page-container .text-center.mb-2 { margin-bottom: 0.1rem !important; }
+  .album-page-container h2 { font-size: 11px !important; }
+  .album-page-container .font-label-numeric.text-\\[9px\\] { font-size: 7px !important; }
+  .album-page-container .text-\\[9px\\] { font-size: 6px !important; }
+  .album-page-container .text-xl { font-size: 14px !important; }
+
+  #main-view { padding-top: 3rem !important; }
+  #main-view .gap-6 { gap: 0.5rem; }
+  #main-view .p-6 { padding: 0.5rem; }
+  #main-view h2.font-display-lg-mobile { font-size: 12px !important; }
+  #main-view .text-3xl { font-size: 0.875rem !important; }
+  #main-view .text-lg { font-size: 0.625rem !important; }
+  #main-view .py-3 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+  #main-view .w-48 { width: 4rem; }
+  #main-view .text-\\[10px\\] { font-size: 7px !important; }
+  #main-view .py-6 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+  #main-view .py-2 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+
+  #main-view .grid-cols-1 { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 2rem !important; padding: 0 1rem !important; }
+  #main-view .max-w-5xl { max-width: 100% !important; }
+
+  .album-page-container .flex-col { flex-direction: row !important; }
+  .album-page-container .max-w-\\[1100px\\] { max-width: 100% !important; }
+  .album-page-container > .flex-col > div:first-child {
+    display: flex !important;
+    width: 70px !important;
+    min-width: 70px !important;
+  }
+  .album-page-container > .flex-col > div:last-child { display: none !important; }
+
+  #main-view .album-card-glow {
+    align-self: center !important;
+    width: 260px !important;
+    height: 280px !important;
+  }
+  #main-view .album-card-glow .absolute.inset-0 {
+    padding: 0.5rem !important;
+  }
+  #main-view .album-card-glow img {
+    object-fit: contain !important;
+  }
+
+  #main-view .grid-cols-1 > .glass-panel {
+    align-self: center !important;
+    justify-self: center !important;
+    width: 260px !important;
+    height: 280px !important;
+    overflow: hidden !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel .floating-pack img {
+    width: auto !important;
+    max-height: 130px !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel h2 {
+    font-size: 10px !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel p {
+    font-size: 8px !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel #countdown {
+    font-size: 0.7rem !important;
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel #btn-sobre-diario {
+    font-size: 0.5rem !important;
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+  #main-view .grid-cols-1 > .glass-panel .py-6 {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* ===== PACK MODAL (SORTEO) ===== */
+  #pack-step-closed { padding: 1rem !important; gap: 0.5rem !important; }
+  #pack-step-closed img { width: 8rem !important; }
+  #pack-step-closed button { font-size: 0.75rem !important; padding: 0.5rem 1rem !important; }
+
+  #pack-step-reveal { padding: 0.75rem !important; gap: 0.5rem !important; }
+  #pack-step-reveal h2 { font-size: 11px !important; margin: 0 !important; }
+  #sticker-stack { width: 9rem !important; height: 11rem !important; }
+  #sticker-stack img { width: 9rem !important; height: 11rem !important; }
+  #sticker-stack span { font-size: 10px !important; margin-top: 0.25rem !important; }
+  #btn-siguiente { font-size: 0.7rem !important; padding: 0.35rem 1rem !important; }
+
+  #pack-step-complete { padding: 0.75rem !important; gap: 0.5rem !important; }
+  #pack-step-complete h2 { font-size: 11px !important; }
+  #pack-stickers-grid img { width: 5rem !important; height: 7rem !important; }
+  #pack-stickers-grid span { font-size: 8px !important; }
+  #pack-stickers-grid button { font-size: 0.6rem !important; gap: 0.15rem !important; }
+  #pack-stickers-grid button span { font-size: 12px !important; }
+  #pack-step-complete > button { font-size: 0.7rem !important; padding: 0.35rem 1rem !important; }
+
+  /* ===== STATS MODAL ===== */
+  #stats-modal .glass-panel { padding: 1rem !important; gap: 0.5rem !important; }
+  #stats-modal h2 { font-size: 14px !important; }
+  #stats-modal .space-y-5 > * { margin-top: 0.5rem !important; }
+  #stats-modal button { font-size: 0.75rem !important; padding: 0.4rem !important; }
+
+  /* ===== PROFILE MODAL ===== */
+  #profile-modal .glass-panel { padding: 0.75rem !important; gap: 0.5rem !important; }
+  #profile-modal .w-28 { width: 4rem !important; height: 4rem !important; }
+  #profile-modal h2 { font-size: 1rem !important; }
+  #profile-modal .text-sm { font-size: 0.65rem !important; }
+  #profile-modal .space-y-4 > * { margin-top: 0.5rem !important; }
+  #profile-modal button { font-size: 0.7rem !important; padding: 0.35rem !important; }
+  #profile-modal .landscape-edit-icon { width: 12px !important; height: 12px !important; padding: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; border-radius: 50% !important; }
+  #profile-modal .landscape-edit-icon span { font-size: 9px !important; }
+
+  /* ===== COMPLETION MODAL ===== */
+  #completion-modal .glass-panel { padding: 0.75rem !important; gap: 0.5rem !important; }
+  #completion-modal .text-7xl { font-size: 36px !important; }
+  #completion-modal h2 { font-size: 0.9rem !important; }
+  #completion-modal p { font-size: 0.7rem !important; }
+  #completion-modal .space-y-2\\.5 > * { margin-top: 0.35rem !important; }
+  #completion-modal button { font-size: 0.6rem !important; padding: 0.35rem !important; }
+  #completion-modal button span.material-symbols-outlined { font-size: 14px !important; }
+
+  /* ===== SHARE MODAL ===== */
+  #compartir-modal .glass-panel { padding: 0.75rem !important; gap: 0.5rem !important; max-width: 280px !important; }
+  #compartir-modal h2 { font-size: 13px !important; }
+  #compartir-modal .w-28 { width: 3.5rem !important; height: 4.5rem !important; }
+  #compartir-modal .w-28 img { width: 100% !important; height: 100% !important; }
+  #compartir-modal p { font-size: 0.65rem !important; }
+  #compartir-modal .space-y-2\\.5 > * { margin-top: 0.35rem !important; }
+  #compartir-modal button { font-size: 0.65rem !important; padding: 0.35rem !important; }
+  #compartir-modal button span.material-symbols-outlined { font-size: 14px !important; }
+  #compartir-modal .absolute.top-3.right-3 { top: 0.4rem !important; right: 0.4rem !important; }
+  #compartir-modal .absolute.top-3.right-3 span { font-size: 16px !important; }
+
+  /* ===== PILON PANEL ===== */
+  #pilon-panel .max-h-\[55vh\] { max-height: 56vh !important; }
+  #pilon-panel h2 { font-size: 13px !important; }
+  #pilon-panel .p-3 { padding: 0.4rem !important; }
+  #pilon-grid { gap: 0.25rem !important; }
+}
+
 @media (min-width: 768px) {
   .album-grid {
     grid-template-columns: repeat(var(--grid-cols, 5), minmax(0, 1fr));

@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/sticker/:id", "destination": "/api/sticker/:id" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

@@ -124,4 +124,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.location.replace('/');
     }
   }
+
+  function keydownHandler(e) {
+    if (e.key === 'Enter') handleSubmit();
+  }
+  emailInput.addEventListener('keydown', keydownHandler);
+  passwordInput.addEventListener('keydown', keydownHandler);
+  usernameInput.addEventListener('keydown', keydownHandler);
 });

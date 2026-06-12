@@ -273,10 +273,13 @@ const DataService = {
           .update({ ultimo_sobre: new Date().toISOString().split('T')[0] })
           .eq('id', user.id);
       }
-    } catch {}
-
-    safeSetJSON(this.STORAGE_SUELTAS, sueltas);
-    safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
+      safeSetJSON(this.STORAGE_SUELTAS, sueltas);
+      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
+    } catch (e) {
+      console.error('Error guardando en Supabase:', e);
+      safeSetJSON(this.STORAGE_SUELTAS, sueltas);
+      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
+    }
     return nuevas;
   },
 
@@ -288,7 +291,7 @@ const DataService = {
           .from('perfiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
         if (data) {
           const profile = {
             username: data.username || user.email?.split('@')[0] || '',
@@ -341,19 +344,21 @@ const DataService = {
 
 const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: { fetch: (...args) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    return fetch(...args, { signal: controller.signal }).finally(() => clearTimeout(timeout));
+  }}
+});
 const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
-const STICKER_FILE_IDS = {};
-
 function getStickerUrl(id) {
-  const fileId = STICKER_FILE_IDS[id] || id;
-  return `${SUPABASE_BUCKET_URL}/stickers/${fileId}.png`;
+  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
 }
 
 function getEmptyUrl(id) {
-  const fileId = STICKER_FILE_IDS[id] || id;
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.png`;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${id}.png`;
 }
 
 const stickerImages = {};
@@ -368,6 +373,7 @@ for (const [id] of Object.entries(stickers)) {
 let misFiguritasPegadas = [];
 let misFiguritasSueltas = [];
 let isOpening = false;
+let isPasting = false;
 
 async function initState() {
   const state = await DataService.getMisFiguritas();
@@ -472,7 +478,7 @@ function renderAlbumPage(page) {
     ? `<div class="w-full lg:w-56 flex-shrink-0 space-y-4">${page.sidebar ? renderSidebar(page.sidebar) : ''}${page.photo ? renderPhoto(page.photo) : ''}</div>`
     : `<div class="hidden lg:block lg:w-56 flex-shrink-0"></div>`;
   return `
-<div class="max-w-[1100px] mx-auto album-page-container rounded-xl shadow-2xl p-1.5 min-h-[260px]">
+<div class="max-w-[1100px] mx-auto album-page-container rounded-xl shadow-2xl p-1.5 min-h-[300px]">
   ${page.watermarkSrc ? `<img alt="Background Shield" class="watermark-shield" src="${page.watermarkSrc}">` : ''}
   <div class="crease hidden md:block"></div>
   <button class="absolute top-4 right-4 z-20 text-on-surface-variant hover:text-primary transition-colors" onclick="goToHome()" type="button">
@@ -483,7 +489,7 @@ function renderAlbumPage(page) {
       ${page.title}
     </h2>
   </header>
-  <div class="relative z-10 flex flex-col lg:flex-row gap-2 items-start justify-between">
+  <div class="relative z-10 mt-10 flex flex-col lg:flex-row gap-2 items-start justify-between">
     ${leftCol}
     <div class="flex-grow min-w-0">
       <div class="album-grid" style="--grid-cols: ${page.gridCols}">
@@ -525,13 +531,7 @@ function toggleAlbum(pageId, direction) {
     });
 
     target.classList.remove('hidden-view');
-
-    setTimeout(() => {
-      if (target) {
-        target.classList.remove('hidden-view');
-        currentView = target.id;
-      }
-    }, 40);
+    currentView = target.id;
   }
 }
 
@@ -589,6 +589,8 @@ const MAX_PACK_SIZE = 5;
 
 async function abrirSobre() {
   if (isOpening) return;
+  const yaAbrio = await DataService.yaAbrioHoy();
+  if (yaAbrio) { mostrarToast('❌ Ya abriste tu sobre hoy. Volvé mañana'); return; }
   isOpening = true;
 
   const btn = document.getElementById('btn-sobre-diario');
@@ -601,6 +603,8 @@ async function abrirSobre() {
   try {
     nuevas = await DataService.abrirSobre();
   } catch (e) {
+    console.error('Error al abrir sobre:', e);
+    mostrarToast('Error al abrir sobre. Intentalo de nuevo.');
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '<span class="material-symbols-outlined">auto_awesome</span> OBTENER SOBRE DIARIO';
@@ -644,7 +648,7 @@ function animarApertura() {
 function renderStickerStack() {
   const container = document.getElementById('sticker-stack');
   const numEl = document.getElementById('pack-current-num');
-  if (numEl) numEl.textContent = packCurrentIndex + 1;
+  if (numEl) numEl.textContent = (packCurrentIndex + 1) + ' de ' + packFiguritas.length;
 
   container.innerHTML = packFiguritas.map((id, index) => {
     const s = stickers[id] || { nombre: '' };
@@ -664,7 +668,7 @@ function renderStickerStack() {
   }).join('');
 
   const btn = document.getElementById('btn-siguiente');
-  if (packCurrentIndex >= MAX_PACK_SIZE - 1) {
+  if (packCurrentIndex >= packFiguritas.length - 1) {
     btn.innerHTML = 'VER TODAS <span class="material-symbols-outlined" style="font-size: 20px;">done_all</span>';
   } else {
     btn.innerHTML = 'SIGUIENTE <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>';
@@ -672,7 +676,7 @@ function renderStickerStack() {
 }
 
 function siguienteFigurita() {
-  if (packCurrentIndex >= MAX_PACK_SIZE - 1) {
+  if (packCurrentIndex >= packFiguritas.length - 1) {
     mostrarTodas();
     return;
   }
@@ -718,7 +722,7 @@ function cerrarCompartir() {
 
 function getMensajeCompartir() {
   const s = stickers[compartirActualId] || { nombre: '' };
-  return `¡Mirá! Conseguí a ${s.nombre} en el Album De El CSYDP ⚪🔴🔵 \nhttps://albumcsydp.vercel.app/sticker/${compartirActualId}`;
+  return `¡Mirá! Conseguí a ${s.nombre} en el Álbum CSYDP\nhttps://albumcsydp.vercel.app/`;
 }
 
 async function compartirCopiar() {
@@ -866,15 +870,21 @@ function reRenderAlbum() {
   });
 }
 
-function checkDailyPack() {
+async function checkDailyPack() {
   const btn = document.getElementById('btn-sobre-diario');
-  const subtitleEl = document.getElementById('subtitulo-sobre-diario');
+  const sub = document.getElementById('subtitulo-sobre-diario');
   if (calcularProgreso() === 100) {
     if (btn) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
-    if (subtitleEl) subtitleEl.textContent = '¡Completaste el álbum! No podés abrir más sobres';
+    if (sub) sub.textContent = '¡Completaste el álbum! No podés abrir más sobres';
+    return;
+  }
+  const yaAbrio = await DataService.yaAbrioHoy();
+  if (yaAbrio) {
+    if (btn) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
+    if (sub) sub.textContent = 'Ya abriste tu sobre hoy. Volvé mañana';
   } else {
     if (btn) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); }
-    if (subtitleEl) subtitleEl.textContent = 'Abrí cuantos sobres quieras (modo prueba)';
+    if (sub) sub.textContent = '¡Tenés un sobre disponible hoy!';
   }
 }
 
@@ -1024,16 +1034,23 @@ function renderStats() {
 // ===================== STICKER PASTE =====================
 
 async function pasteSticker(btnElement) {
+  if (isPasting) return;
+  isPasting = true;
+
   const slot = btnElement.closest('.sticker-slot');
   const id = slot.dataset.stickerId;
 
-  if (!misFiguritasSueltas.includes(id)) return;
+  if (!misFiguritasSueltas.includes(id)) {
+    isPasting = false;
+    return;
+  }
 
   slot.dataset.state = 'pegando';
 
   const success = await DataService.pegarFigurita(id);
   if (!success) {
     slot.dataset.state = 'pegar';
+    isPasting = false;
     return;
   }
 
@@ -1063,6 +1080,8 @@ async function pasteSticker(btnElement) {
     const modal = document.getElementById('completion-modal');
     if (modal) modal.classList.remove('hidden-view');
   }
+
+  isPasting = false;
 }
 
 function cerrarCompletado() {
@@ -1070,7 +1089,7 @@ function cerrarCompletado() {
   if (modal) modal.classList.add('hidden-view');
 }
 
-const MENSAJE_COMPLETADO = '🎉 ¡Completé el álbum del Club Social y Deportivo Pila! 🏆\nhttps://albumcsydp.vercel.app/';
+const MENSAJE_COMPLETADO = '¡Completé el álbum del Club Social y Deportivo Pila!\nhttps://albumcsydp.vercel.app/';
 
 async function completadoCopiar() {
   try {
@@ -1106,11 +1125,11 @@ function cerrarStickerModal() {
 }
 
 async function logout() {
-  await supabaseClient.auth.signOut({ scope: 'local' });
-  localStorage.removeItem('csydp_pegadas');
-  localStorage.removeItem('csydp_sueltas');
-  localStorage.removeItem('csydp_ultimo_sobre');
-  localStorage.removeItem('csydp_profile');
+  profileData = null;
+  misFiguritasPegadas = [];
+  misFiguritasSueltas = [];
+  await supabaseClient.auth.signOut();
+  localStorage.clear();
   window.location.replace('/login.html?logout=1');
 }
 
@@ -1144,11 +1163,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   updatePilonCounter();
   updateProgressBar();
-  checkDailyPack();
+  await checkDailyPack();
   document.getElementById('avatar-upload-input').addEventListener('change', async (e) => {
     if (e.target.files?.[0]) { await uploadAvatar(e.target.files[0]); e.target.value = ''; }
   });
 
   const ls = document.getElementById('loading-screen');
   if (ls) ls.classList.add('hidden');
+
+  checkOrientation();
+  let orientTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(orientTimer);
+    orientTimer = setTimeout(checkOrientation, 150);
+  });
+  window.addEventListener('orientationchange', () => {
+    clearTimeout(orientTimer);
+    orientTimer = setTimeout(checkOrientation, 300);
+  });
 });
+
+function checkOrientation() {
+  const overlay = document.getElementById('rotate-overlay');
+  if (!overlay) return;
+  const isMobile = window.innerWidth < 768;
+  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+  overlay.classList.toggle('hidden', !(isMobile && isPortrait));
+}

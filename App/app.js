@@ -405,7 +405,7 @@ function renderStickerSlot(id) {
     </div>
   </div>
   <div class="state-imagen absolute inset-0 cursor-pointer" onclick="abrirStickerModal('${id}')">
-    <img src="${imgSrc}" alt="Sticker" class="w-full h-full object-contain p-0.5" loading="lazy">
+    <img src="${imgSrc}" alt="${stickers[id]?.nombre || 'Figurita'}" class="w-full h-full object-contain p-0.5" loading="lazy">
   </div>
   <div class="state-pegando absolute inset-0 flex items-center justify-center">
     <span class="material-symbols-outlined spin text-secondary-container" style="font-size: 48px;">progress_activity</span>
@@ -710,7 +710,7 @@ function abrirCompartir(id) {
   const s = stickers[id] || { nombre: '' };
   const imgEl = document.getElementById('compartir-img');
   const nameEl = document.getElementById('compartir-nombre');
-  if (imgEl) imgEl.src = stickerImages[id] || '';
+  if (imgEl) { imgEl.src = stickerImages[id] || ''; imgEl.alt = s.nombre; }
   if (nameEl) nameEl.textContent = s.nombre;
   document.getElementById('compartir-modal').classList.remove('hidden-view');
 }
@@ -1116,7 +1116,8 @@ async function completadoWeb() {
 
 function abrirStickerModal(id) {
   const img = document.getElementById('sticker-modal-img');
-  if (img) img.src = stickerImages[id] || '';
+  const s = stickers[id] || { nombre: '' };
+  if (img) { img.src = stickerImages[id] || ''; img.alt = s.nombre; }
   document.getElementById('sticker-modal').classList.remove('hidden-view');
 }
 

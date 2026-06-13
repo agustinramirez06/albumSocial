@@ -2,6 +2,12 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>ALBUM CSYDP</title>
+<meta name="description" content="Album de figuritas virtuales del Club Social y Deportivo Pila. Colecciona, pega y completa tu album CSYDP.">
+<meta property="og:title" content="Album CSYDP">
+<meta property="og:description" content="Colecciona las figuritas de los campeonatos del Club Social y Deportivo Pila.">
+<meta property="og:image" content="https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/0.png">
+<meta property="og:url" content="https://album-csydp.vercel.app">
+<meta property="og:type" content="website">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;800&amp;family=Hanken+Grotesk:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
@@ -111,21 +117,43 @@
         }
     </script>
 <link href="Styles/styles.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="font-body-lg text-body-lg">
+<body class="font-body-lg text-body-lg min-h-screen flex flex-col">
 <div id="loading-screen">
   <img src="assets/social-escudo-estrelladorada.png" alt="CSYDP"
     style="width:150px;height:150px;object-fit:contain;margin-bottom:36px;filter:drop-shadow(0 0 20px rgba(195,198,215,0.2));">
   <div class="loading-spin" style="width:60px;height:60px;border-width:4px;"></div>
 </div>
 <!-- Rotate Overlay -->
-<div class="fixed inset-0 z-[9999] bg-surface px-8 hidden" id="rotate-overlay">
-  <img src="assets/social-escudo-estrelladorada.png" alt="CSYDP" class="w-28 h-28 object-contain mb-8">
-  <h1 class="font-display-lg-mobile text-primary text-4xl mb-2">ALBUM CSYDP</h1>
-  <p class="text-on-surface-variant font-body-sm mb-8">Club Social y Deportivo Pila</p>
-  <span class="material-symbols-outlined text-6xl text-secondary-container rotate-icon">screen_rotation</span>
-  <p class="text-primary font-headline-md mt-6">Rotá el teléfono<br>para empezar</p>
+<div class="fixed inset-0 z-[9999] bg-surface px-8 hidden flex flex-col items-center justify-between" id="rotate-overlay">
+  <div class="flex flex-col items-center justify-center flex-1">
+    <img src="assets/social-escudo-estrelladorada.png" alt="CSYDP" class="w-28 h-28 object-contain mb-8">
+    <p class="font-display-lg-mobile text-primary text-4xl mb-2">ALBUM CSYDP</p>
+    <p class="text-on-surface-variant font-body-sm mb-8">Club Social y Deportivo Pila</p>
+    <span class="material-symbols-outlined text-6xl text-secondary-container rotate-icon">screen_rotation</span>
+    <p class="text-primary font-headline-md mt-6">Rotá el teléfono<br>para empezar</p>
+  </div>
+  <footer class="footer-min footer-overlay">
+    <div class="footer-content">
+      <p class="footer-text">© Creado Por Agustin Ramirez</p>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/in/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="Linkedin">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+        <a href="https://www.instagram.com/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/2241568193" target="_blank" rel="noopener noreferrer" class="social-icon" title="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://github.com/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
 </div>
 <!-- Top App Bar -->
 <header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface/40">
@@ -176,8 +204,8 @@
 <div class="scoreboard-font text-3xl text-on-surface tracking-widest bg-black/40 py-3 rounded-lg border-b-2 border-primary/20" id="countdown">23:12:23</div>
 <button id="btn-sobre-diario" class="w-full bg-secondary-container text-on-secondary-container font-display-lg-mobile text-lg py-3 rounded-lg shadow-[0_4px_0_#930011] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2" onclick="abrirSobre()">
 <span class="material-symbols-outlined">auto_awesome</span>
-                        OBTENER SOBRE DIARIO
-                    </button>
+                    OBTENER SOBRE DIARIO
+                </button>
 </div>
 </div>
 <!-- Album Access Card -->
@@ -219,7 +247,7 @@
 <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="pack-modal">
   <!-- Step 1: Closed Pack -->
   <div id="pack-step-closed" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20 relative">
-    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button" aria-label="Cerrar">
       <span class="material-symbols-outlined text-2xl">close</span>
     </button>
     <img src="assets/sobre-album.png" alt="Sobre" class="w-64 h-auto object-contain floating-pack">
@@ -230,7 +258,7 @@
   </div>
   <!-- Step 2: Revealing stickers -->
   <div id="pack-step-reveal" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 max-w-lg w-full mx-4 border border-primary/20 relative">
-    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button" aria-label="Cerrar">
       <span class="material-symbols-outlined text-2xl">close</span>
     </button>
     <h2 class="font-headline-md text-primary text-center">FIGURITA <span id="pack-current-num">1</span></h2>
@@ -241,7 +269,7 @@
   </div>
   <!-- Step 3: All stickers revealed -->
   <div id="pack-step-complete" class="hidden-view flex flex-col items-center gap-6 glass-panel rounded-xl p-8 w-full mx-4 border border-primary/20 relative">
-    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button">
+    <button class="absolute top-2 right-2 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarModalCompleto()" type="button" aria-label="Cerrar">
       <span class="material-symbols-outlined text-2xl">close</span>
     </button>
     <h2 class="font-headline-md text-primary text-center">ABRISTE TU SOBRE</h2>
@@ -258,7 +286,7 @@
   <div class="bg-surface-container-high border-b border-white/10 rounded-b-xl shadow-2xl max-h-[55vh] flex flex-col mx-4">
     <div class="flex items-center justify-between p-3 border-b border-white/5">
       <h2 class="font-headline-md text-[16px] text-primary">Figuritas <span class="text-secondary-container">Sueltas</span></h2>
-      <button class="text-on-surface-variant hover:text-primary transition-colors" onclick="togglePilon()" type="button">
+      <button class="text-on-surface-variant hover:text-primary transition-colors" onclick="togglePilon()" type="button" aria-label="Cerrar">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
@@ -346,7 +374,7 @@
   <!-- Share Modal -->
   <div class="fixed inset-0 z-[65] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="compartir-modal">
     <div class="glass-panel rounded-xl p-6 max-w-xs w-full mx-4 border border-primary/20 flex flex-col items-center gap-4 relative">
-      <button class="absolute top-3 right-3 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarCompartir()" type="button">
+      <button class="absolute top-3 right-3 text-on-surface-variant hover:text-primary transition-colors" onclick="cerrarCompartir()" type="button" aria-label="Cerrar">
         <span class="material-symbols-outlined text-2xl">close</span>
       </button>
       <h2 class="font-headline-md text-primary text-xl">COMPARTIR</h2>
@@ -369,7 +397,7 @@
     </div>
   </div>
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-28 md:bottom-8 left-1/2 -translate-x-1/2 z-[80] bg-surface-container-high text-primary font-body-sm px-5 py-2.5 rounded-lg border border-white/10 shadow-2xl backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none"></div>
+  <div id="toast" class="fixed bottom-28 md:bottom-8 left-1/2 -translate-x-1/2 z-[80] bg-surface-container-high text-primary font-body-sm px-5 py-2.5 rounded-lg border border-white/10 shadow-2xl backdrop-blur-xl transition-all duration-300 opacity-0 pointer-events-none" role="status" aria-live="polite" aria-atomic="true"></div>
   <!-- Completion Modal -->
   <div class="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="completion-modal">
   <div class="glass-panel rounded-xl p-10 max-w-md w-full mx-4 border border-tertiary/40 flex flex-col items-center gap-6 text-center">
@@ -398,13 +426,33 @@
 <!-- Sticker Modal -->
 <div class="fixed inset-0 z-[75] flex items-center justify-center bg-black/80 hidden-view" id="sticker-modal" onclick="cerrarStickerModal()">
   <div class="relative max-w-lg w-full mx-4 flex items-center justify-center" onclick="event.stopPropagation()">
-    <button class="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors z-10" onclick="cerrarStickerModal()" type="button">
+    <button class="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors z-10" onclick="cerrarStickerModal()" type="button" aria-label="Cerrar">
       <span class="material-symbols-outlined text-3xl">close</span>
     </button>
-    <img id="sticker-modal-img" class="w-full max-h-[40vh] object-contain drop-shadow-2xl" src="" alt="Sticker">
+    <img id="sticker-modal-img" class="w-full max-h-[40vh] object-contain drop-shadow-2xl" src="" alt="">
   </div>
 </div>
 <script src="App/app.js"></script>
+
+<footer class="footer-min">
+  <div class="footer-content">
+    <p class="footer-text">© Creado Por Agustin Ramirez</p>
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/in/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="Linkedin">
+        <i class="fa-brands fa-linkedin"></i>
+      </a>
+      <a href="https://www.instagram.com/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://wa.me/2241568193" target="_blank" rel="noopener noreferrer" class="social-icon" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://github.com/agustinramirez06" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </div>
+  </div>
+</footer>
 
 </body></html>
   

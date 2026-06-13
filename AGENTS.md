@@ -11,11 +11,12 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 ├── index.html                # App principal (Tailwind dark, SPA moderna) — raíz
 ├── login.html                # Login/registro con Supabase Auth — raíz
 ├── App/
-│   ├── app.js                # ~1060 líneas: stickers, DataService, render, sorteo, stats, perfil, avatar
+│   ├── app.js                # ~1192 líneas: stickers, DataService, render, sorteo, stats, perfil, avatar, compartir, zoom, orientación
 │   └── login.js              # Login/registro con Supabase Auth
 ├── Styles/
 │   ├── styles.css            # Estilos del álbum, pilón, animaciones
 │   └── login.css             # Estilos de login/registro
+├── robots.txt                # Rastreo permitido para buscadores
 └── assets/                   # Logo, sobres, fotos del club, favicon
 ```
 
@@ -158,7 +159,7 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 - `goToHome()`: vuelve a main-view
 
 #### Pack Opening
-- `abrirSobre()`: orquesta apertura (DataService → actualiza estado → modal)
+- `abrirSobre()`: orquesta apertura (verifica límite diario → DataService → actualiza estado → modal)
 - `animarApertura()`: transición sobre cerrado → revelar
 - `renderStickerStack()`: renderiza stack de stickers con animación
 - `siguienteFigurita()`: avanza al siguiente sticker o muestra todas
@@ -189,7 +190,7 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 
 #### Utilidades
 - `updateTimer()`: countdown hasta medianoche
-- `checkDailyPack()`: modo prueba (siempre habilita botón)
+- `checkDailyPack()`: verifica límite diario real (async, Supabase) y habilita/deshabilita botón
 - `reRenderAlbum()`: actualiza data-state de slots sin reconstruir DOM
 - `initState()`: carga estado desde DataService (localStorage)
 
@@ -206,23 +207,27 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 ```javascript
 const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: { fetch: (...args) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    return fetch(...args, { signal: controller.signal }).finally(() => clearTimeout(timeout));
+  }}
+});
 const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
 function getStickerUrl(id) {
-  const fileId = STICKER_FILE_IDS[id] || id;
-  return `${SUPABASE_BUCKET_URL}/stickers/${fileId}.png`;
+  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
 }
 
 function getEmptyUrl(id) {
-  const fileId = STICKER_FILE_IDS[id] || id;
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.png`;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${id}.png`;
 }
 ```
 
 ### Countdown
 `setInterval(updateTimer, 1000)` calcula tiempo hasta medianoche.
-**Fase 2**: debe reemplazarse por lógica contra `ultimo_sobre` del perfil + fecha servidor.
+El límite diario se controla vía `perfiles.ultimo_sobre` en Supabase (resetea a las 00:00, estilo Panini).
 
 ### Pilón (Panel desde arriba)
 - Activado desde bottom nav (mobile) o header (desktop)
@@ -245,7 +250,7 @@ function getEmptyUrl(id) {
 ## PATRONES IMPORTANTES
 
 ### Capa de Datos (DataService)
-Implementado con localStorage. Para Fase 2 solo se cambia la implementación:
+Implementado con Supabase + localStorage como fallback:
 
 ```javascript
 const DataService = {
@@ -270,12 +275,12 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 
 ### Flujo de Pegado
 1. Usuario hace clic en badge "PEGAR" del casillero
-2. `pasteSticker()`: verifica que el ID esté en `misFiguritasSueltas`
-3. `DataService.pegarFigurita(id)`: actualiza localStorage
+2. `pasteSticker()`: flag `isPasting` previene race condition, verifica que el ID esté en `misFiguritasSueltas`
+3. `DataService.pegarFigurita(id)`: hace `update` en Supabase `album_usuarios` + localStorage como fallback
 4. JS splitea de `misFiguritasSueltas` y pushea a `misFiguritasPegadas`
 5. `slot.dataset.state = 'imagen'` + animación glow dorado
 6. `updateProgressBar()` + `updatePilonCounter()`
-7. En Fase 2: `DataService.pegarFigurita()` también hará `update()` en Supabase `album_usuarios`
+7. Si progreso = 100%, abre modal de completado
 
 ### Nota sobre index2.html
 `index2.html` usa las mismas keys de localStorage (`csydp_pegadas`, etc.), por lo que los datos se comparten entre ambos archivos. No representa un problema funcional, pero puede causar confusión al probar.
@@ -337,7 +342,6 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 ### Pendiente (post-v1)
 - [ ] Reset de contraseña via `supabase.auth.resetPasswordForEmail()`
 - [ ] Service Worker para cachear imágenes del bucket (cache-first)
-- [ ] Restaurar `checkDailyPack()` con límite real (deshabilitar modo prueba)
 
 ### Completado (Fase 3)
 - [x] Agregadas 50 stickers nuevos (IDs 20–69: 33 actuales + 17 promesas)
@@ -360,6 +364,44 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - [x] Watermark condicional en páginas sin `watermarkSrc` (elimina `<img src="undefined">`)
 - [x] CSS cleanup: merge `.album-page-container` (3→1), removido CSS muerto (slide classes, keyframes, .profile-modal-avatar)
 
+### Completado (Fase 4 — Landscape Responsive + Estabilidad)
+- [x] Landscape forzado: overlay `#rotate-overlay` (z-[9999]) en portrait mobile, sin opción "Enter anyway"
+- [x] Media query `@media (orientation: landscape) and (max-height: 450px)` para todas las vistas
+- [x] Sizing compacto: header reducido, home cards 260×280, sticker slots 100px max-height
+- [x] Special stickers (copa, escudos, 50/51/52) visibles en columna izquierda 70px en landscape
+- [x] Todos los modals adaptados: pack, stats, profile, pilon, share, completion
+- [x] Bottom nav oculto en landscape, botones desktop visibles
+- [x] Límite diario real restaurado (1 sobre/día, resetea 00:00, estilo Panini)
+- [x] `checkDailyPack()` async con verificación real Supabase
+- [x] Orientation handler con debounce (150ms resize / 300ms orientationchange)
+- [x] Timeout 10s en Supabase client (AbortController)
+- [x] Flag `isPasting` previene race condition en pasteSticker()
+- [x] Toast + console.error en catch de abrirSobre() y otros bloques críticos
+- [x] `logout()` limpia profileData + misFiguritasPegadas/Sueltas + localStorage.clear()
+- [x] `logout()` usa signOut global (sin scope:local)
+- [x] `.single()` → `.maybeSingle()` en getProfile
+- [x] Enter key en inputs de login (keydown → handleSubmit)
+- [x] Serverless API eliminado (`/api/sticker/[id].js`, `package.json`)
+- [x] `STICKER_FILE_IDS` eliminado (dead code)
+- [x] Mensajes de compartir sin emojis (compatibilidad multiplataforma)
+- [x] Numeración dinámica "1 de N" en pack (en vez de "DE 5" hardcodeado)
+- [x] Album card usa `assets/portada-album.png` local (sin Google Drive)
+- [x] setTimeouts redundantes eliminados (toggleAlbum)
+- [x] safeSetJSON movido dentro del try en abrirSobre (fallback a localStorage en catch)
+
+### Completado (Fase 5 — Accesibilidad + SEO)
+- [x] Meta tags Open Graph (title, description, image, url, type) en `index.html`
+- [x] Alt text dinámico con nombre real del sticker en álbum, compartir y modal
+- [x] h1 duplicado en overlay de rotación corregido a `<p>`
+- [x] Focus visible global (`*:focus-visible` outline dorado)
+- [x] `role="status" aria-live="polite"` en toast
+- [x] `aria-label="Cerrar"` en todos los botones close icon-only
+- [x] `role="alert"` en error de login
+- [x] `<form>` + labels `sr-only` en inputs de login
+- [x] Favicon agregado a `login.html`
+- [x] `robots.txt` creado en raíz (Allow: /)
+- [x] Footer desktop restaurado + footer dentro de `#rotate-overlay` con estilo compacto
+
 ## NOTAS CRÍTICAS
 - Páginas del álbum: siempre tienen `.album-page` (`position: absolute; top:0; left:0; right:0`). Nunca cambian de posición.
 - Transición entre páginas: crossfade puro, sin movimiento. Clases en uso: `hidden-view` + `.view-transition{opacity}`.
@@ -369,8 +411,8 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - `reRenderAlbum()` actualiza `data-state` de cada slot sin reconstruir el DOM (innerHTML ya no se usa)
 - `updatePilonCounter()` usa `querySelectorAll('.pilon-badge')` para actualizar badges mobile + desktop
 - No hay límite diario en modo prueba (`checkDailyPack()` siempre habilita el botón)
-- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{fileId}.png`
-- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{fileId}.png` (comprimidas con pngquant, prefetch dinámico en loading screen)
+- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{id}.png`
+- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{id}.png` (comprimidas con pngquant, prefetch dinámico en loading screen)
 - `campeones2017/` ya no es necesario para el runtime (las imágenes van desde el bucket)
 - La anon key está hardcodeada en `app.js` (no debe compartirse públicamente, pero la de este proyecto es específica para este bucket público)
 - El avatar se guarda como data URI base64 en `perfiles.avatar_url` (sin usar Storage)

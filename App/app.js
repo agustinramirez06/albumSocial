@@ -722,7 +722,7 @@ function cerrarCompartir() {
 
 function getMensajeCompartir() {
   const s = stickers[compartirActualId] || { nombre: '' };
-  return `¡Mirá! Conseguí a ${s.nombre} en el Álbum CSYDP\nhttps://albumcsydp.vercel.app/`;
+  return `¡Mirá! Conseguí a ${s.nombre} en el Álbum CSYDP\nhttps://www.clubsocialydeportivopila.com.ar/`;
 }
 
 async function compartirCopiar() {
@@ -1089,7 +1089,7 @@ function cerrarCompletado() {
   if (modal) modal.classList.add('hidden-view');
 }
 
-const MENSAJE_COMPLETADO = '¡Completé el álbum del Club Social y Deportivo Pila!\nhttps://albumcsydp.vercel.app/';
+const MENSAJE_COMPLETADO = '¡Completé el álbum del Club Social y Deportivo Pila!\nhttps://www.clubsocialydeportivopila.com.ar/';
 
 async function completadoCopiar() {
   try {

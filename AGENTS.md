@@ -72,7 +72,7 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 |-------------|--------|------------------------------------|
 | id          | bigint | Número fijo de figurita (PK)       |
 | nombre      | text   | Nombre del jugador/elemento        |
-| categoria   | text   | campeones / (futuro: actuales, promesas, historica, especial) |
+| categoria   | text   | campeones / actuales / promesas / historicas / especial |
 | imagen_url  | text   | URL de la imagen en bucket `images-album` |
 
 ### `perfiles`
@@ -114,7 +114,7 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 
 ### Datos de Figuritas (`stickers{}`)
 Objeto clave-valor donde key = ID (string), value = `{ nombre, categoria }`.
-IDs usan strings numéricas ('0'..'69'). Nota: ID '37' no existe (salto intencional).
+IDs usan strings numéricas ('0'..'75'). Nota: ID '37' no existe (salto intencional).
 - Las URLs de imágenes se resuelven dinámicamente con `getStickerUrl(id)` → bucket `images-album`
 - `getEmptyUrl(id)` → bucket `images-album/figuritasVacias/{id}.png`
 - Las imágenes vacías se cargan vía prefetch durante el loading screen
@@ -126,11 +126,12 @@ Array de objetos con:
 - `photo`: imagen + label
 - `pageLabel`
 
-Actualmente 7 páginas:
+Actualmente 8 páginas:
 1. Campeones Clausura 2017 (stickerIds 1-10, especial: copa 0)
 2. Campeones Clausura 2017 (stickerIds 11-18 + 15, especial: escudo histórico)
 3–5. Jugadores Actuales (stickerIds 20-49, 10 por página + special 50/51/52)
 6–7. Promesas CSYDP (stickerIds 53-69, 10 por página)
+8. Momentos Destacados (stickerIds 70-75, 3 columnas, aspecto rectangular 4:3)
 
 ### Sistema de Estados de Casilleros
 Cada `.sticker-slot` tiene un `data-state` que controla qué se muestra:

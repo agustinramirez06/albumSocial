@@ -356,6 +356,9 @@ body {
   .album-page-container { padding: 0.25rem !important; }
   .album-grid { grid-template-columns: repeat(var(--grid-cols, 5), minmax(0, 1fr)) !important; gap: 0.1rem; }
   .sticker-slot { aspect-ratio: 3/4 !important; max-height: 100px !important; }
+  #album-page-8 .sticker-slot { aspect-ratio: 4/3 !important; }
+  #album-page-8 .grid { gap: 0.1rem !important; }
+  #album-page-8 .grid a { font-size: 7px !important; }
   .sticker-slot img { border-radius: 2px; max-height: 100px !important; }
   .sticker-slot .pegar-badge { font-size: 7px !important; padding: 2px 8px !important; }
   .sticker-slot .state-vacio img,
@@ -366,6 +369,7 @@ body {
   .album-page-container h2 { font-size: 11px !important; }
   .album-page-container .font-label-numeric.text-\\[9px\\] { font-size: 7px !important; }
   .album-page-container .text-\\[9px\\] { font-size: 6px !important; }
+  .sticker-desc-overlay { font-size: 6px !important; padding: 10px 4px 3px !important; }
   .album-page-container .text-xl { font-size: 14px !important; }
 
   #main-view { padding-top: 3rem !important; }
@@ -498,6 +502,29 @@ body {
   #pilon-panel h2 { font-size: 13px !important; }
   #pilon-panel .p-3 { padding: 0.4rem !important; }
   #pilon-grid { gap: 0.25rem !important; }
+}
+
+#album-page-8 .sticker-slot {
+  aspect-ratio: 4/3;
+}
+
+#album-page-8 .sticker-slot img {
+  object-fit: fill !important;
+}
+
+.sticker-desc-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding: 20px 6px 5px;
+  color: #e2e2e2;
+  font-size: 9px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  line-height: 1.25;
+  text-align: center;
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {

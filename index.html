@@ -127,6 +127,12 @@
     style="width:150px;height:150px;object-fit:contain;margin-bottom:36px;filter:drop-shadow(0 0 20px rgba(195,198,215,0.2));">
   <div class="loading-spin" style="width:60px;height:60px;border-width:4px;"></div>
 </div>
+<noscript>
+  <div style="padding:2rem;text-align:center;max-width:600px;margin:auto;">
+    <h1>Álbum CSYDP — Club Social y Deportivo Pila</h1>
+    <p>Coleccioná, pegá y completá el álbum de figuritas virtuales del Club Social y Deportivo Pila. Campeones 2017, jugadores actuales, promesas e historia.</p>
+  </div>
+</noscript>
 <!-- Rotate Overlay -->
 <div class="fixed inset-0 z-[9999] bg-surface px-8 hidden flex flex-col items-center justify-between" id="rotate-overlay">
   <div class="flex flex-col items-center justify-center flex-1">
@@ -244,6 +250,7 @@
 <main class="view-transition min-h-screen pt-32 pb-12 px-4 overflow-y-auto hidden-view album-page" id="album-page-5"></main>
 <main class="view-transition min-h-screen pt-32 pb-12 px-4 overflow-y-auto hidden-view album-page" id="album-page-6"></main>
 <main class="view-transition min-h-screen pt-32 pb-12 px-4 overflow-y-auto hidden-view album-page" id="album-page-7"></main>
+<main class="view-transition min-h-screen pt-32 pb-12 px-4 overflow-y-auto hidden-view album-page" id="album-page-8"></main>
 <!-- Pack Result Modal -->
 <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden-view" id="pack-modal">
   <!-- Step 1: Closed Pack -->
@@ -455,5 +462,10 @@
   </div>
 </footer>
 
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js');
+}
+</script>
 </body></html>
   

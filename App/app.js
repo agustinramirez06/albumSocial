@@ -69,7 +69,13 @@ const stickers = {
   '66': { nombre: 'Valentino Fuertes', categoria: 'promesas' },
   '67': { nombre: 'Nazareno Balcedo', categoria: 'promesas' },
   '68': { nombre: 'Manuel Maceira', categoria: 'promesas' },
-  '69': { nombre: 'Matias Pereyra', categoria: 'promesas' }
+  '69': { nombre: 'Matias Pereyra', categoria: 'promesas' },
+  '70': { nombre: 'Final Primera 2010', categoria: 'historicas' },
+  '71': { nombre: 'Campeon 3era 2006', categoria: 'historicas' },
+  '72': { nombre: 'Tercer Puesto 2005', categoria: 'historicas' },
+  '73': { nombre: 'Final en 5ta division 2002', categoria: 'historicas' },
+  '74': { nombre: 'Triangular 4ta division 2022', categoria: 'historicas' },
+  '75': { nombre: 'Comision Directiva', categoria: 'historicas' }
 };
 
 
@@ -93,7 +99,8 @@ const albumPages = [
     specialStickerId: '19',
     watermarkSrc: 'https://lh3.googleusercontent.com/aida-public/AB6AXuASCyPMrX1cHc_oTSaExBwNKqw0eUuIzg7W4j6trAzS9blJFPQU2MA9l7WC6CHC75mk4cADJWwI0PYSGbrgP3ReWJP65U0w-kg5SoeymXEzGfq0OQJGXeqGezkC1fZz2oVOu7qK03qGnO7sXOqa6XF8OUWHxlkAlKUZfrBVjBUiKEUxs_Io8VE8gxSzcMyxLAlCSBgwITzWFDByo8r7kDkXjfEUU6xF0tLKkfRX3HUSGmnivd_kjBWQ5NCWde0ILdMGJWKtkE_a6kQR',
     sidebar: { type: 'match', title: 'Final Vuelta 23/12/2017 CSYDP vs UNION Vecinal De Etcheverry', score: 'CSYDP 2-2 Union Vecinal De Etcheverry', goals: ['M.Orlando','M.Orlando'] },
-    photo: { src: '../assets/final-vuelta.jpg', label: 'FINAL VUELTA 2017' },
+    photo: { src: 'assets/final-vuelta.jpg', label: 'FINAL VUELTA 2017' },
+    videoUrl: 'https://www.youtube.com/watch?v=wnRJ7dm_O_U',
     pageLabel: 'HOJA 2'  },
     
   {
@@ -145,10 +152,42 @@ const albumPages = [
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 7'
+  },
+  {
+    id: 8,
+    title: 'Momentos Destacados',
+    gridCols: 3,
+    stickerIds: ['70','71','72','73','74','75'],
+    specialStickerId: null,
+    sidebar: null,
+    photo: null,
+    pageLabel: 'HOJA 8',
+    stickerDescriptions: {
+      '70': 'Final del torneo clausura 2010 CSYDP (1-3) Racing de Bavio.',
+      '71': 'Campeonato de la tercera division en 2006 CSYDP (4-1) empalme de san vicente.',
+      '72': '3er Puesto en Primera division torneo Apertura 2005 CSYDP (1-2) Progreso de Brandsen.',
+      '73': 'Final en 5ta division CSYDP (3-3) Atletico chascomus Cat 88/87 pierde el CSYDP penales.',
+      '74': 'triangular final año 2022 CSYDP, El Salado y Napoli Argentino.',
+      '75': 'Parte de la comision directiva del CSDYP.'
+    },
+    stickerVideos: {
+      '73': 'https://www.facebook.com/share/v/1K6yiAhidM/'
+    },
+    stickerVideoLabels: {
+      '73': 'Ver Video final 5ta Division'
+    }
   }
 ];
 
 // ===================== SAFE STORAGE HELPERS =====================
+
+function todayLocal() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 
 function safeGetJSON(key, fallback) {
   try {
@@ -270,15 +309,15 @@ const DataService = {
         await supabaseClient.from('album_usuarios').insert(inserts);
         await supabaseClient
           .from('perfiles')
-          .update({ ultimo_sobre: new Date().toISOString().split('T')[0] })
+          .update({ ultimo_sobre: todayLocal() })
           .eq('id', user.id);
       }
       safeSetJSON(this.STORAGE_SUELTAS, sueltas);
-      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
+      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, todayLocal());
     } catch (e) {
       console.error('Error guardando en Supabase:', e);
       safeSetJSON(this.STORAGE_SUELTAS, sueltas);
-      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, new Date().toISOString().split('T')[0]);
+      safeSetJSON(this.STORAGE_ULTIMO_SOBRE, todayLocal());
     }
     return nuevas;
   },
@@ -297,7 +336,8 @@ const DataService = {
             username: data.username || user.email?.split('@')[0] || '',
             email: user.email || '',
             avatarUrl: data.avatar_url || DEFAULT_AVATAR,
-            memberSince: data.created_at ? new Date(data.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
+            memberSince: data.created_at ? new Date(data.created_at).toISOString().split('T')[0] : todayLocal(),
+            es_admin: data.es_admin || false
           };
           safeSetJSON(this.STORAGE_PROFILE, profile);
           return profile;
@@ -330,14 +370,14 @@ const DataService = {
           .eq('id', user.id)
           .single();
         if (data?.ultimo_sobre) {
-          const today = new Date().toISOString().split('T')[0];
+          const today = todayLocal();
           return data.ultimo_sobre === today;
         }
       }
     } catch {}
     try {
       const ultimo = localStorage.getItem(this.STORAGE_ULTIMO_SOBRE);
-      return ultimo === new Date().toISOString().split('T')[0];
+      return ultimo === todayLocal();
     } catch { return false; }
   }
 };
@@ -389,10 +429,11 @@ function getStickerState(id) {
 
 // ===================== RENDER FUNCTIONS =====================
 
-function renderStickerSlot(id) {
+function renderStickerSlot(id, description) {
   const s = stickers[id] || { nombre: '' };
   const state = getStickerState(id);
   const imgSrc = stickerImages[id] || '';
+  const descOverlay = description ? `<div class="sticker-desc-overlay">${description}</div>` : '';
   return `
 <div class="sticker-slot relative flex flex-col items-center justify-center" data-sticker-id="${id}" data-state="${state}">
   <div class="state-vacio absolute inset-0 flex items-center justify-center">
@@ -406,6 +447,7 @@ function renderStickerSlot(id) {
   </div>
   <div class="state-imagen absolute inset-0 cursor-pointer" onclick="abrirStickerModal('${id}')">
     <img src="${imgSrc}" alt="${stickers[id]?.nombre || 'Figurita'}" class="w-full h-full object-contain p-0.5" loading="lazy">
+    ${descOverlay}
   </div>
   <div class="state-pegando absolute inset-0 flex items-center justify-center">
     <span class="material-symbols-outlined spin text-secondary-container" style="font-size: 48px;">progress_activity</span>
@@ -444,6 +486,10 @@ function renderPhoto(photo) {
 </div>`;
 }
 
+function renderVideoLink(url) {
+  return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="block text-[10px] text-secondary-container hover:brightness-110 transition-all font-label-numeric text-center mt-1 font-bold">▶ VER VIDEO</a>`;
+}
+
 function renderNavButtons(pageId) {
   const idx = albumPages.findIndex(p => p.id === pageId);
   const prevPage = idx > 0 ? albumPages[idx - 1].id : 0;
@@ -475,7 +521,7 @@ function renderAlbumPage(page) {
     ? `<div class="w-full lg:w-36 flex-shrink-0 flex justify-center"><div class="w-36">${renderStickerSlot(page.specialStickerId)}</div></div>`
     : `<div class="hidden lg:block lg:w-36 flex-shrink-0"></div>`;
   const rightCol = (page.sidebar || page.photo)
-    ? `<div class="w-full lg:w-56 flex-shrink-0 space-y-4">${page.sidebar ? renderSidebar(page.sidebar) : ''}${page.photo ? renderPhoto(page.photo) : ''}</div>`
+    ? `<div class="w-full lg:w-56 flex-shrink-0 space-y-4">${page.sidebar ? renderSidebar(page.sidebar) : ''}${page.photo ? renderPhoto(page.photo) : ''}${page.videoUrl ? renderVideoLink(page.videoUrl) : ''}</div>`
     : `<div class="hidden lg:block lg:w-56 flex-shrink-0"></div>`;
   return `
 <div class="max-w-[1100px] mx-auto album-page-container rounded-xl shadow-2xl p-1.5 min-h-[300px]">
@@ -493,8 +539,21 @@ function renderAlbumPage(page) {
     ${leftCol}
     <div class="flex-grow min-w-0">
       <div class="album-grid" style="--grid-cols: ${page.gridCols}">
-        ${page.stickerIds.map(id => renderStickerSlot(id)).join('')}
+        ${page.stickerIds.map(id => {
+          const desc = page.stickerDescriptions?.[id] || '';
+          return renderStickerSlot(id, desc);
+        }).join('')}
       </div>
+      ${page.stickerVideos ? (() => {
+        const cols = page.gridCols || 3;
+        const links = Object.entries(page.stickerVideos).map(([id, url]) => {
+          const idx = page.stickerIds.indexOf(id);
+          const col = (idx % cols) + 1;
+          const name = page.stickerVideoLabels?.[id] || stickers[id]?.nombre || id;
+          return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="grid-column: ${col};" class="text-secondary-container hover:brightness-110 transition-all font-label-numeric text-[10px] font-bold">▶ ${name}</a>`;
+        });
+        return `<div class="grid mt-2 pt-1.5 border-t border-white/10" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr)); gap: 0.375rem;">${links.join('')}</div>`;
+      })() : ''}
     </div>
     ${rightCol}
   </div>
@@ -589,8 +648,10 @@ const MAX_PACK_SIZE = 5;
 
 async function abrirSobre() {
   if (isOpening) return;
-  const yaAbrio = await DataService.yaAbrioHoy();
-  if (yaAbrio) { mostrarToast('❌ Ya abriste tu sobre hoy. Volvé mañana'); return; }
+  if (profileData?.es_admin !== true) {
+    const yaAbrio = await DataService.yaAbrioHoy();
+    if (yaAbrio) { mostrarToast('❌ Ya abriste tu sobre hoy. Volvé mañana'); return; }
+  }
   isOpening = true;
 
   const btn = document.getElementById('btn-sobre-diario');
@@ -656,7 +717,7 @@ function renderStickerStack() {
     const isActive = index === packCurrentIndex;
     const isHidden = index > packCurrentIndex;
     const zIndex = isActive ? 5 : (isRevealed ? packCurrentIndex - index : 0);
-    const opacity = isActive ? 1 : (isRevealed ? 0.25 : 0);
+    const opacity = isActive ? 1 : 0;
     const scale = isActive ? 1 : (isRevealed ? 0.85 : 0.5);
 
     const src = stickerImages[id] || '';
@@ -722,7 +783,7 @@ function cerrarCompartir() {
 
 function getMensajeCompartir() {
   const s = stickers[compartirActualId] || { nombre: '' };
-  return `¡Mirá! Conseguí a ${s.nombre} en el Álbum CSYDP\nhttps://www.clubsocialydeportivopila.com.ar/`;
+  return `¡Mirá! Conseguí la figurita ${s.nombre} en el Álbum CSYDP\nhttps://www.clubsocialydeportivopila.com.ar/`;
 }
 
 async function compartirCopiar() {
@@ -878,6 +939,11 @@ async function checkDailyPack() {
     if (sub) sub.textContent = '¡Completaste el álbum! No podés abrir más sobres';
     return;
   }
+  if (profileData?.es_admin === true) {
+    if (btn) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); }
+    if (sub) sub.textContent = '¡Tenés un sobre disponible hoy!';
+    return;
+  }
   const yaAbrio = await DataService.yaAbrioHoy();
   if (yaAbrio) {
     if (btn) { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
@@ -899,7 +965,8 @@ async function loadProfile() {
       username: user?.email?.split('@')[0] || '',
       email: user?.email || '',
       avatarUrl: DEFAULT_AVATAR,
-      memberSince: new Date().toISOString().split('T')[0]
+      memberSince: todayLocal(),
+      es_admin: false
     };
     await DataService.saveProfile(profileData);
   }
@@ -987,8 +1054,8 @@ function renderStatsPorCategoria() {
     categorias[cat].total++;
     if (misFiguritasPegadas.includes(id)) categorias[cat].pegadas++;
   }
-  const iconos = { campeones: 'emoji_events', actuales: 'star', promesas: 'auto_awesome' };
-  const labels = { campeones: 'Campeones', actuales: 'Actuales', promesas: 'Promesas' };
+  const iconos = { campeones: 'emoji_events', actuales: 'star', promesas: 'auto_awesome', historicas: 'history' };
+  const labels = { campeones: 'Campeones', actuales: 'Actuales', promesas: 'Promesas', historicas: 'Historicas' };
   return Object.entries(categorias).map(([cat, data]) => `
     <div class="flex items-center gap-3 text-sm">
       <span class="material-symbols-outlined text-tertiary">${iconos[cat] || 'circle'}</span>

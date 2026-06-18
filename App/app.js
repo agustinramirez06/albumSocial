@@ -101,6 +101,8 @@ const albumPages = [
     sidebar: { type: 'match', title: 'Final Vuelta 23/12/2017 CSYDP vs UNION Vecinal De Etcheverry', score: 'CSYDP 2-2 Union Vecinal De Etcheverry', goals: ['M.Orlando','M.Orlando'] },
     photo: { src: 'assets/final-vuelta.jpg', label: 'FINAL VUELTA 2017' },
     videoUrl: 'https://www.youtube.com/watch?v=wnRJ7dm_O_U',
+    videoLabel: 'Ver Video Final 2017',
+    videoCol: 4,
     pageLabel: 'HOJA 2'  },
     
   {
@@ -109,6 +111,7 @@ const albumPages = [
     gridCols: 5,
     stickerIds: ['20','21','22','23','24','25','26','27','28','29'],
     specialStickerId: '50',
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 3'
@@ -119,6 +122,7 @@ const albumPages = [
     gridCols: 5,
     stickerIds: ['30','31','32','33','34','35','36','38','39'],
     specialStickerId: '51',
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 4'
@@ -129,6 +133,7 @@ const albumPages = [
     gridCols: 5,
     stickerIds: ['40','41','42','43','44','45','46','47','48','49'],
     specialStickerId: '52',
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 5'
@@ -139,6 +144,7 @@ const albumPages = [
     gridCols: 5,
     stickerIds: ['53','54','55','56','57','58','59','60','61','62'],
     specialStickerId: null,
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 6'
@@ -149,6 +155,7 @@ const albumPages = [
     gridCols: 5,
     stickerIds: ['63','64','65','66','67','68','69'],
     specialStickerId: null,
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 7'
@@ -159,6 +166,7 @@ const albumPages = [
     gridCols: 3,
     stickerIds: ['70','71','72','73','74','75'],
     specialStickerId: null,
+    watermarkSrc: 'assets/social-escudo-estrelladorada.png',
     sidebar: null,
     photo: null,
     pageLabel: 'HOJA 8',
@@ -394,11 +402,19 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
 function getStickerUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
+  return `${SUPABASE_BUCKET_URL}/stickers/${id}.webp?v=1`;
 }
 
 function getEmptyUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${id}.png`;
+  const emptyOverrides = {
+    '70': '70_',
+    '72': '72_',
+    '73': '73_',
+    '74': '74_',
+    '75': '75_',
+  };
+  const fileId = emptyOverrides[id] || id;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.webp?v=1`;
 }
 
 const stickerImages = {};
@@ -543,6 +559,7 @@ function renderAlbumPage(page) {
           const desc = page.stickerDescriptions?.[id] || '';
           return renderStickerSlot(id, desc);
         }).join('')}
+        ${page.videoCol ? `<a href="${page.videoUrl}" target="_blank" rel="noopener noreferrer" style="grid-column: ${page.videoCol}; align-items:center; justify-content:center;" class="text-secondary-container hover:brightness-110 transition-all font-label-numeric text-[10px] font-bold p-2">▶ ${page.videoLabel || 'Ver Video'}</a>` : ''}
       </div>
       ${page.stickerVideos ? (() => {
         const cols = page.gridCols || 3;
@@ -1104,51 +1121,49 @@ async function pasteSticker(btnElement) {
   if (isPasting) return;
   isPasting = true;
 
-  const slot = btnElement.closest('.sticker-slot');
-  const id = slot.dataset.stickerId;
+  try {
+    const slot = btnElement.closest('.sticker-slot');
+    const id = slot.dataset.stickerId;
 
-  if (!misFiguritasSueltas.includes(id)) {
-    isPasting = false;
-    return;
-  }
+    if (!misFiguritasSueltas.includes(id)) return;
 
-  slot.dataset.state = 'pegando';
+    slot.dataset.state = 'pegando';
 
-  const success = await DataService.pegarFigurita(id);
-  if (!success) {
-    slot.dataset.state = 'pegar';
-    isPasting = false;
-    return;
-  }
-
-  const idx = misFiguritasSueltas.indexOf(id);
-  if (idx !== -1) {
-    misFiguritasSueltas.splice(idx, 1);
-    if (!misFiguritasPegadas.includes(id)) {
-      misFiguritasPegadas.push(id);
+    const success = await DataService.pegarFigurita(id);
+    if (!success) {
+      slot.dataset.state = 'pegar';
+      return;
     }
-  }
 
-  const img = slot.querySelector('.state-imagen img');
-  if (img) img.src = stickerImages[id] || '';
-  slot.dataset.state = 'imagen';
-
-  setTimeout(() => {
-    const stateImg = slot.querySelector('.state-imagen');
-    if (stateImg) {
-      stateImg.style.boxShadow = "0 0 20px rgba(233, 196, 0, 0.4)";
+    const idx = misFiguritasSueltas.indexOf(id);
+    if (idx !== -1) {
+      misFiguritasSueltas.splice(idx, 1);
+      if (!misFiguritasPegadas.includes(id)) {
+        misFiguritasPegadas.push(id);
+      }
     }
-  }, 800);
 
-  updateProgressBar();
-  updatePilonCounter();
+    const img = slot.querySelector('.state-imagen img');
+    if (img) img.src = stickerImages[id] || '';
+    slot.dataset.state = 'imagen';
 
-  if (calcularProgreso() === 100) {
-    const modal = document.getElementById('completion-modal');
-    if (modal) modal.classList.remove('hidden-view');
+    setTimeout(() => {
+      const stateImg = slot.querySelector('.state-imagen');
+      if (stateImg) {
+        stateImg.style.boxShadow = "0 0 20px rgba(233, 196, 0, 0.4)";
+      }
+    }, 800);
+
+    updateProgressBar();
+    updatePilonCounter();
+
+    if (calcularProgreso() === 100) {
+      const modal = document.getElementById('completion-modal');
+      if (modal) modal.classList.remove('hidden-view');
+    }
+  } finally {
+    isPasting = false;
   }
-
-  isPasting = false;
 }
 
 function cerrarCompletado() {
@@ -1196,9 +1211,12 @@ async function logout() {
   profileData = null;
   misFiguritasPegadas = [];
   misFiguritasSueltas = [];
-  await supabaseClient.auth.signOut();
-  localStorage.clear();
-  window.location.replace('/login.html?logout=1');
+  try {
+    await supabaseClient.auth.signOut();
+  } finally {
+    localStorage.clear();
+    window.location.replace('/login.html?logout=1');
+  }
 }
 
 // ===================== INIT =====================

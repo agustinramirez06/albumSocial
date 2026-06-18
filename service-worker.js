@@ -2,6 +2,7 @@ const CACHE = 'csydp-stickers-v1';
 const BUCKET = 'https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album';
 
 self.addEventListener('install', e => self.skipWaiting());
+
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>

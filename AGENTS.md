@@ -33,7 +33,7 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 
 - Project ref: `wumpbrsnzoybwszjsbwv`
 - Storage bucket público: `images-album`
-  - Carpeta `stickers/` con `0.png` a `69.png` (comprimidos)
+  - Carpeta `stickers/` con `0.webp` a `75.webp` (comprimidos ~40 KB c/u)
   - URL base: `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album`
 - Anon key configurada en `app.js`
 
@@ -116,7 +116,7 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 Objeto clave-valor donde key = ID (string), value = `{ nombre, categoria }`.
 IDs usan strings numéricas ('0'..'75'). Nota: ID '37' no existe (salto intencional).
 - Las URLs de imágenes se resuelven dinámicamente con `getStickerUrl(id)` → bucket `images-album`
-- `getEmptyUrl(id)` → bucket `images-album/figuritasVacias/{id}.png`
+- `getEmptyUrl(id)` → bucket `images-album/figuritasVacias/{id}.webp?v=1` (con overrides para 70→70_, 72→72_, 73→73_, 74→74_, 75→75_)
 - Las imágenes vacías se cargan vía prefetch durante el loading screen
 
 ### Páginas del Álbum (`albumPages[]`)
@@ -218,11 +218,19 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
 function getStickerUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/stickers/${id}.png`;
+  return `${SUPABASE_BUCKET_URL}/stickers/${id}.webp?v=1`;
 }
 
 function getEmptyUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${id}.png`;
+  const emptyOverrides = {
+    '70': '70_',
+    '72': '72_',
+    '73': '73_',
+    '74': '74_',
+    '75': '75_',
+  };
+  const fileId = emptyOverrides[id] || id;
+  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.webp?v=1`;
 }
 ```
 
@@ -342,8 +350,10 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 
 ### Pendiente (post-v1)
 - [ ] Reset de contraseña via `supabase.auth.resetPasswordForEmail()`
-- [ ] Service Worker para cachear imágenes del bucket (cache-first)
+- [x] Service Worker para cachear imágenes del bucket (cache-first) con estrategia Cache First
+- [x] Migración de `.png` a `.webp` + query param `?v=1` para cache busting (se eliminó `?cache-control=` porque causaba 400 intermitentes en Supabase Storage)
 
+- [x] SW cache bump `v1` → `v2` → `v3` para forzar purge de `.png` viejos + respuestas 400 cacheadas
 ### Completado (Fase 3)
 - [x] Agregadas 50 stickers nuevos (IDs 20–69: 33 actuales + 17 promesas)
 - [x] Agregadas 5 páginas nuevas al álbum (págs. 3–5 actuales + specials 50/51/52, 6–7 promesas)
@@ -412,8 +422,8 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - `reRenderAlbum()` actualiza `data-state` de cada slot sin reconstruir el DOM (innerHTML ya no se usa)
 - `updatePilonCounter()` usa `querySelectorAll('.pilon-badge')` para actualizar badges mobile + desktop
 - No hay límite diario en modo prueba (`checkDailyPack()` siempre habilita el botón)
-- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{id}.png`
-- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{id}.png` (comprimidas con pngquant, prefetch dinámico en loading screen)
+- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{id}.webp?v=1`
+- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{id}.webp?v=1` (con overrides para IDs 70-75, comprimidas ~40 KB, prefetch dinámico en loading screen)
 - `campeones2017/` ya no es necesario para el runtime (las imágenes van desde el bucket)
 - La anon key está hardcodeada en `app.js` (no debe compartirse públicamente, pero la de este proyecto es específica para este bucket público)
 - El avatar se guarda como data URI base64 en `perfiles.avatar_url` (sin usar Storage)

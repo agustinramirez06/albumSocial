@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
+const SUPABASE_URL = 'https://ynlkxjlicngvumygpyfr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlubGt4amxpY25ndnVteWdweWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxODkwODAsImV4cCI6MjA5Nzc2NTA4MH0.uKGQyyBA-KR4shjB0LbQVPJd3LcNkv8H8pwYeVQaT7I';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let isRegisterMode = false;

@@ -1,0 +1,15 @@
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Opencode
+.agignore
+
+# Env
+.env
+.env.local
+.env.production

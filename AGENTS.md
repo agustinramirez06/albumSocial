@@ -31,11 +31,9 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 
 ## SUPABASE
 
-- Project ref: `wumpbrsnzoybwszjsbwv`
-- Storage bucket público: `images-album`
-  - Carpeta `stickers/` con `0.webp` a `75.webp` (comprimidos ~40 KB c/u)
-  - URL base: `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album`
-- Anon key configurada en `app.js`
+- Project ref: `ynlkxjlicngvumygpyfr`
+- Sin Storage externo: imágenes servidas desde `/images/` (assets estáticos locales)
+- Anon key hardcodeada en `App/app.js` y `App/login.js` (vanilla JS, sin build system)
 
 ## FASES DEL PROYECTO
 
@@ -73,7 +71,7 @@ Proyecto de álbum de figuritas virtual del **Club Social y Deportivo Pila (CSYD
 | id          | bigint | Número fijo de figurita (PK)       |
 | nombre      | text   | Nombre del jugador/elemento        |
 | categoria   | text   | campeones / actuales / promesas / historicas / especial |
-| imagen_url  | text   | URL de la imagen en bucket `images-album` |
+| imagen_url  | text   | (eliminada del esquema — ruta construida desde `id`) |
 
 ### `perfiles`
 | Columna      | Tipo         | Descripción                              |
@@ -206,8 +204,8 @@ Estados se manejan con CSS: `.sticker-slot[data-state="vacio"] .state-vacio { di
 ## SUPABASE CONFIG (app.js)
 
 ```javascript
-const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
+const SUPABASE_URL = 'https://ynlkxjlicngvumygpyfr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlubGt4amxpY25ndnVteWdweWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxODkwODAsImV4cCI6MjA5Nzc2NTA4MH0.uKGQyyBA-KR4shjB0LbQVPJd3LcNkv8H8pwYeVQaT7I';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   global: { fetch: (...args) => {
     const controller = new AbortController();
@@ -215,22 +213,13 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     return fetch(...args, { signal: controller.signal }).finally(() => clearTimeout(timeout));
   }}
 });
-const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
 
 function getStickerUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/stickers/${id}.webp?v=1`;
+  return `/images/stickers/${id}.webp`;
 }
 
 function getEmptyUrl(id) {
-  const emptyOverrides = {
-    '70': '70_',
-    '72': '72_',
-    '73': '73_',
-    '74': '74_',
-    '75': '75_',
-  };
-  const fileId = emptyOverrides[id] || id;
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.webp?v=1`;
+  return `/images/empty/${id}.webp`;
 }
 ```
 
@@ -422,9 +411,8 @@ let misFiguritasSueltas = [];   // IDs de figuritas sueltas (sin pegar)
 - `reRenderAlbum()` actualiza `data-state` de cada slot sin reconstruir el DOM (innerHTML ya no se usa)
 - `updatePilonCounter()` usa `querySelectorAll('.pilon-badge')` para actualizar badges mobile + desktop
 - No hay límite diario en modo prueba (`checkDailyPack()` siempre habilita el botón)
-- Las imágenes de stickers se sirven desde `https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album/stickers/{id}.webp?v=1`
-- Los casilleros vacíos se sirven desde el mismo bucket: `images-album/figuritasVacias/{id}.webp?v=1` (con overrides para IDs 70-75, comprimidas ~40 KB, prefetch dinámico en loading screen)
-- `campeones2017/` ya no es necesario para el runtime (las imágenes van desde el bucket)
-- La anon key está hardcodeada en `app.js` (no debe compartirse públicamente, pero la de este proyecto es específica para este bucket público)
+- Las imágenes de stickers se sirven desde `/images/stickers/{id}.webp` (assets estáticos locales)
+- Los casilleros vacíos se sirven desde `/images/empty/{id}.webp` (assets estáticos locales)
+- La anon key está hardcodeada en `App/app.js` y `App/login.js` (vanilla JS, sin build system)
 - El avatar se guarda como data URI base64 en `perfiles.avatar_url` (sin usar Storage)
 - Alias en vercel.json: rewrite `/(.*)` → `/index.html` para SPA routing

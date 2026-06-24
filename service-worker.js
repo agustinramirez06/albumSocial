@@ -1,5 +1,5 @@
-const CACHE = 'csydp-stickers-v1';
-const BUCKET = 'https://wumpbrsnzoybwszjsbwv.supabase.co/storage/v1/object/public/images-album';
+const CACHE = 'csydp-stickers-v4';
+const IMAGES_PREFIX = '/images/';
 
 self.addEventListener('install', e => self.skipWaiting());
 
@@ -13,7 +13,7 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.url.startsWith(BUCKET)) {
+  if (e.request.url.includes(IMAGES_PREFIX)) {
     e.respondWith(
       caches.match(e.request).then(cached =>
         cached || fetch(e.request).then(res => {

@@ -46,7 +46,7 @@ const stickers = {
   '43': { nombre: 'Juan Perez', categoria: 'actuales' },
   '44': { nombre: 'Marcos Gutierrez', categoria: 'actuales' },
   '45': { nombre: 'Cristopher Hermida', categoria: 'actuales' },
-  '46': { nombre: 'Demian Dort', categoria: 'actuales' },
+  '46': { nombre: 'Demian Tort', categoria: 'actuales' },
   '47': { nombre: 'Juan Roman De Leon', categoria: 'actuales' },
   '48': { nombre: 'Chapa Medina', categoria: 'actuales' },
   '49': { nombre: 'Pola Ottaviano', categoria: 'actuales' },
@@ -390,8 +390,8 @@ const DataService = {
   }
 };
 
-const SUPABASE_URL = 'https://wumpbrsnzoybwszjsbwv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1bXBicnNuem95YndzempzYnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODQ2NDAsImV4cCI6MjA5NTU2MDY0MH0.p9RPH3gmUpjNHvLeZGSkXe5ICsjQI1NzWg-YZpCJE-Y';
+const SUPABASE_URL = 'https://ynlkxjlicngvumygpyfr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlubGt4amxpY25ndnVteWdweWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxODkwODAsImV4cCI6MjA5Nzc2NTA4MH0.uKGQyyBA-KR4shjB0LbQVPJd3LcNkv8H8pwYeVQaT7I';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   global: { fetch: (...args) => {
     const controller = new AbortController();
@@ -399,22 +399,12 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     return fetch(...args, { signal: controller.signal }).finally(() => clearTimeout(timeout));
   }}
 });
-const SUPABASE_BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/images-album`;
-
 function getStickerUrl(id) {
-  return `${SUPABASE_BUCKET_URL}/stickers/${id}.webp?v=1`;
+  return `/images/stickers/${id}.webp`;
 }
 
 function getEmptyUrl(id) {
-  const emptyOverrides = {
-    '70': '70_',
-    '72': '72_',
-    '73': '73_',
-    '74': '74_',
-    '75': '75_',
-  };
-  const fileId = emptyOverrides[id] || id;
-  return `${SUPABASE_BUCKET_URL}/figuritasVacias/${fileId}.webp?v=1`;
+  return `/images/empty/${id}.webp`;
 }
 
 const stickerImages = {};
